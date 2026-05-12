@@ -197,16 +197,6 @@ const builderDna = [
   }
 ];
 
-const interests = [
-  "FPGA systems",
-  "ASIC design verification",
-  "embedded systems",
-  "robotics / edge AI",
-  "event-based vision",
-  "AI infrastructure for hardware engineers",
-  "industrial automation"
-];
-
 const builtSystems = [
   "out-of-order RISC-V CPU",
   "low-latency FPGA packet pipeline",
@@ -631,29 +621,6 @@ export default function Home() {
               <h3 className="text-lg font-semibold text-white">{title}</h3>
               <p className="mt-3 text-sm leading-6 text-slate-300">{copy}</p>
             </motion.div>
-          ))}
-        </div>
-      </section>
-
-      <section className="section-shell py-16 md:py-20">
-        <SectionHeading
-          eyebrow="Research / interests"
-          title="Where the next systems questions point."
-          copy="Areas that connect Jayce's hardware/software background with verification, robotics, edge AI, and automation."
-        />
-        <div className="flex flex-wrap gap-3">
-          {interests.map((interest, index) => (
-            <motion.span
-              key={interest}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.35, delay: index * 0.04 }}
-              className="rounded-md border border-slate-700/80 bg-chassis-900/80 px-4 py-3 text-sm text-slate-200"
-            >
-              {interest}
-            </motion.span>
           ))}
         </div>
       </section>
