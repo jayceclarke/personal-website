@@ -37,12 +37,13 @@ const projects = [
     eyebrow: "CPU-CORE",
     title: "Out-of-Order RISC-V Processor",
     description:
-      "Designed a superscalar out-of-order RISC-V processor in SystemVerilog with register renaming, speculative execution, reorder buffer, branch prediction, and store-to-load forwarding.",
+      "Designed an N-way superscalar R10K-style RISC-V processor in SystemVerilog with register renaming, a reorder buffer, and speculative execution.",
     highlights: [
-      "Ranked 2nd in EECS 470 with 98.34/100",
       "R10K-style microarchitecture",
+      "Load-Store Queue, Gshare branch prediction, instruction prefetching, and Early Tag Broadcast",
       "Verified with Synopsys VCS and Verdi",
-      "Focused on performance, correctness, and cycle-level debugging"
+      "Developed high-coverage testbenches for correctness",
+      "Achieved a 7.8 ns critical path"
     ],
     tags: ["SystemVerilog", "Computer Architecture", "VCS", "Verdi", "RISC-V"],
     accent: "cyan",
@@ -52,15 +53,15 @@ const projects = [
     eyebrow: "PACKET-RTL",
     title: "Low-Latency FPGA Market Data Pipeline",
     description:
-      "Built a hardware pipeline for parsing market-data packets, decoding exchange-style messages, maintaining order-book state, and computing synthetic index signals.",
+      "Architected and verified a 7-stage, 250 MHz FPGA-targeted HFT pipeline processing NYSE XDP order-based market data over 10G Ethernet.",
     highlights: [
-      "Ethernet / IPv4 / UDP packet parsing",
-      "CME-style market-data decode",
-      "Stateful order lookup and order-book maintenance",
-      "Synthesized around 4 ns timing",
-      "Designed for deterministic, cycle-level latency"
+      "250 MHz FPGA-targeted pipeline",
+      "NYSE XDP order-based market data over 10G Ethernet",
+      "Full order book maintenance via cuckoo hash table lookup",
+      "3-level top-of-book tracking across 500 symbols",
+      "64-bit AXI-Stream datapath validated with cocotb and a Python reference model"
     ],
-    tags: ["FPGA", "RTL", "AXI-Stream", "Packet Processing", "Low Latency"],
+    tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low Latency"],
     accent: "green",
     Icon: Workflow
   },
@@ -68,12 +69,12 @@ const projects = [
     eyebrow: "EMBEDDED",
     title: "Embedded FPGA Gaming Console",
     description:
-      "Built an FPGA-based gaming system with VGA output, STM32 integration, NES controller input, accelerometer/IR peripherals, and SPI/I2C/UART communication.",
+      "Designed an FPGA-based gaming console with VGA output, STM32 integration, NES controller input, IR sensors, and a wireless glove.",
     highlights: [
-      "Hardware/software integration",
-      "VGA game rendering",
-      "STM32 peripheral communication",
-      "FPGA game logic"
+      "VGA output supporting games including Galaga and Pong",
+      "UART, SPI, and I2C communication on STM32",
+      "Integrated NES controller, IR sensors, and wireless glove peripherals",
+      "FPGA interface for data processing and display control"
     ],
     tags: ["Embedded Systems", "STM32", "FPGA", "VGA", "UART", "SPI", "I2C"],
     accent: "amber",
@@ -83,12 +84,12 @@ const projects = [
     eyebrow: "VISION",
     title: "Industrial AI Vision Tooling",
     description:
-      "Built Python-based computer vision tooling for industrial OCR, Data Matrix decoding, and manufacturing automation during internships at Procter & Gamble.",
+      "Built Python-based computer vision tooling for industrial OCR, Data Matrix/barcode decoding, defect detection, and manufacturing automation during internships at Procter & Gamble.",
     highlights: [
-      "OCR and label decoding",
-      "Factory automation context",
-      "Image preprocessing and defect detection workflows",
-      "Python tooling for manufacturing data collection"
+      "OCR and Data Matrix/barcode pipelines for industrial label-reading workflows",
+      "3D camera evaluation for defect-detection accuracy and speed",
+      "Preprocessing tuned for varied lighting and surface conditions",
+      "Manufacturing test-stand data collection and analysis"
     ],
     tags: ["Python", "Computer Vision", "Industrial Automation", "AI"],
     accent: "cyan",
@@ -98,12 +99,12 @@ const projects = [
     eyebrow: "PRODUCTION",
     title: "Production Software at SpaceX",
     description:
-      "Worked on production software systems involving scheduling/tasking workflows, authorization/access control, operator-facing tooling, and metrics/alerting.",
+      "Worked on Starshield production software involving scheduling/tasking workflows, authorization/access control, operator-facing tooling, and metrics/alerting.",
     highlights: [
       "Angular and .NET",
-      "Production-facing software",
-      "Access-control and operational tooling",
-      "Built for reliability in high-stakes environments"
+      "Scheduling and tasking features for satellite workflows",
+      "Authentication and access-control logic for new user access paths",
+      "Angular UI features plus production metrics and alerting"
     ],
     tags: ["Angular", ".NET", "C#", "Production Software"],
     accent: "green",
