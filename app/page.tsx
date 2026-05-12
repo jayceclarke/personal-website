@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Activity,
@@ -23,10 +23,9 @@ import {
 import { cn } from "@/lib/utils";
 
 const LINKS = {
-  // TODO: Replace these placeholder URLs before deploying.
-  github: "#",
-  linkedin: "#",
-  resume: "#",
+  github: "https://github.com/jayceclarke",
+  linkedin: "https://www.linkedin.com/in/jayce-clarke/",
+  resume: "/jaycejc-resume.pdf",
   email: "mailto:jaycejc@umich.edu"
 };
 
@@ -197,11 +196,12 @@ const builderDna = [
   }
 ];
 
-const builtSystems = [
-  "out-of-order RISC-V CPU",
-  "low-latency FPGA packet pipeline",
-  "embedded FPGA gaming console",
-  "industrial AI vision tooling"
+const buildLog = [
+  { marker: "✓", label: "out-of-order RISC-V processor", tone: "complete" },
+  { marker: "✓", label: "low-latency FPGA packet pipeline", tone: "complete" },
+  { marker: "✓", label: "industrial AI vision tooling @ P&G", tone: "complete" },
+  { marker: "✓", label: "production software @ SpaceX", tone: "complete" },
+  { marker: "→", label: "pre-silicon validation @ IBM", tone: "active" }
 ];
 
 const fadeUp = {
@@ -249,9 +249,13 @@ function IconButton({
   Icon: LucideIcon;
   variant?: "primary" | "secondary";
 }) {
+  const opensNewTab = href.startsWith("http") || href.endsWith(".pdf");
+
   return (
     <a
       href={href}
+      target={opensNewTab ? "_blank" : undefined}
+      rel={opensNewTab ? "noopener noreferrer" : undefined}
       className={cn(
         "button-focus inline-flex h-11 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold transition duration-200",
         variant === "primary"
@@ -265,7 +269,25 @@ function IconButton({
   );
 }
 
-function BuildStatusPanel() {
+function BackForwardCacheGuard() {
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, []);
+
+  return null;
+}
+
+function BuildLogPanel() {
   return (
     <motion.div
       initial={{ opacity: 0, x: 24 }}
@@ -277,7 +299,7 @@ function BuildStatusPanel() {
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-signal-green shadow-[0_0_14px_rgba(121,242,166,0.8)]" />
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-slate-300">
-            build status
+            build log
           </p>
         </div>
         <Terminal className="h-4 w-4 text-signal-cyan" aria-hidden="true" />
@@ -285,30 +307,23 @@ function BuildStatusPanel() {
 
       <div className="rounded border border-slate-800 bg-[#050810] p-4">
         <p className="text-xs uppercase tracking-[0.24em] text-signal-cyan">
-          BUILD STATUS
+          BUILD LOG
         </p>
 
-        <div className="mt-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-            systems built:
-          </p>
-          <div className="mt-3 space-y-2">
-            {builtSystems.map((system) => (
-              <div key={system} className="flex gap-3 text-sm text-slate-200">
-                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-signal-green" />
-                <span>{system}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-6 border-t border-slate-800 pt-4">
-          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-            focus:
-          </p>
-          <p className="mt-3 text-sm leading-6 text-slate-200">
-            RTL{" \u00b7 "}embedded{" \u00b7 "}verification{" \u00b7 "}systems software
-          </p>
+        <div className="mt-5 space-y-3">
+          {buildLog.map((item) => (
+            <div key={item.label} className="flex gap-3 text-sm">
+              <span
+                className={cn(
+                  "shrink-0",
+                  item.tone === "active" ? "text-signal-amber" : "text-signal-green"
+                )}
+              >
+                [{item.marker}]
+              </span>
+              <span className="text-slate-100">{item.label}</span>
+            </div>
+          ))}
         </div>
       </div>
     </motion.div>
@@ -489,6 +504,7 @@ function SkillGroup({
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden">
+      <BackForwardCacheGuard />
       <div className="technical-grid" aria-hidden="true" />
       <div className="noise-vignette" aria-hidden="true" />
 
@@ -554,7 +570,7 @@ export default function Home() {
         </motion.div>
 
         <div>
-          <BuildStatusPanel />
+          <BuildLogPanel />
         </div>
       </section>
 
