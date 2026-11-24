@@ -8,30 +8,64 @@ import {
   ArrowRight,
   ArrowUpRight,
   Braces,
+  Cloud,
   Code2,
   Cpu,
   FileText,
+  Gauge,
+  GitPullRequest,
   Github,
   Layers,
   Linkedin,
   Mail,
-  Radio,
   Terminal,
-  Workflow,
-  Zap
+  Workflow
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const EMAIL = "jaycejclarke@gmail.com";
 
 const LINKS = {
   github: "https://github.com/jayceclarke",
   linkedin: "https://www.linkedin.com/in/jayce-clarke/",
   resume: "/jaycejc-resume.pdf",
-  email: "mailto:jaycejc@umich.edu"
+  email: `mailto:${EMAIL}`
 };
 
 // TODO: If you add real project screenshots or diagrams later, add imageUrl
 // fields to the project objects and render them inside ProjectCard.
 const projects = [
+  {
+    eyebrow: "AI-EVALS",
+    title: "Production Eval Platform at PointOne",
+    description:
+      "Built an end-to-end eval platform that replays a full day of production workflows against any PR, comparing system accuracy before and after the change and separating real regressions from model noise.",
+    highlights: [
+      "Replays a full day of production workflows against any PR",
+      "Separates real regressions from model noise",
+      "Every AI-powered task made model-agnostic, benchmarked on accuracy, latency, and cost",
+      "Models hot-swappable per task in production through a switch",
+      "Wired into CI: relevant PRs trigger targeted eval runs and post results back"
+    ],
+    tags: ["AI Evals", "Model Benchmarking", "GitHub Actions", "CI", "Production Software"],
+    accent: "cyan",
+    Icon: GitPullRequest
+  },
+  {
+    eyebrow: "PRODUCTION",
+    title: "Production Software at SpaceX",
+    description:
+      "Worked on Starshield production software: led team coordination for production features and built scheduling/tasking workflows, authentication logic, and metrics/alerting.",
+    highlights: [
+      "Owned task breakdown and delivery tracking for Starshield production features",
+      "Scheduling and tasking workflows for satellite operations",
+      "Expanded authentication logic for a production platform",
+      "Angular metrics and alerting for faster issue detection"
+    ],
+    tags: ["Angular", ".NET", "C#", "Production Software"],
+    accent: "green",
+    Icon: Code2
+  },
   {
     eyebrow: "CPU-CORE",
     title: "Out-of-Order RISC-V Processor",
@@ -40,12 +74,11 @@ const projects = [
     highlights: [
       "R10K-style microarchitecture",
       "Load-Store Queue, Gshare branch prediction, instruction prefetching, and Early Tag Broadcast",
-      "Verified with Synopsys VCS and Verdi",
-      "Developed high-coverage testbenches for correctness",
+      "Verified with Synopsys VCS and Verdi testbenches",
       "Achieved a 7.8 ns critical path"
     ],
     tags: ["SystemVerilog", "Computer Architecture", "VCS", "Verdi", "RISC-V"],
-    accent: "cyan",
+    accent: "amber",
     Icon: Cpu
   },
   {
@@ -55,29 +88,13 @@ const projects = [
       "Architected and verified a 7-stage, 250 MHz FPGA-targeted HFT pipeline processing NYSE XDP order-based market data over 10G Ethernet.",
     highlights: [
       "250 MHz FPGA-targeted pipeline",
-      "NYSE XDP order-based market data over 10G Ethernet",
-      "Full order book maintenance via cuckoo hash table lookup",
-      "3-level top-of-book tracking across 500 symbols",
-      "64-bit AXI-Stream datapath validated with cocotb and a Python reference model"
+      "Order-book maintenance with cuckoo hashing and 3-level top-of-book tracking",
+      "Index-arbitrage signal generation on a 64-bit AXI-Stream datapath",
+      "Validated with cocotb and a Python reference model"
     ],
     tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low Latency"],
-    accent: "green",
+    accent: "cyan",
     Icon: Workflow
-  },
-  {
-    eyebrow: "EMBEDDED",
-    title: "Embedded FPGA Gaming Console",
-    description:
-      "Designed an FPGA-based gaming console with VGA output, STM32 integration, NES controller input, IR sensors, and a wireless glove.",
-    highlights: [
-      "VGA output supporting games including Galaga and Pong",
-      "UART, SPI, and I2C communication on STM32",
-      "Integrated NES controller, IR sensors, and wireless glove peripherals",
-      "FPGA interface for data processing and display control"
-    ],
-    tags: ["Embedded Systems", "STM32", "FPGA", "VGA", "UART", "SPI", "I2C"],
-    accent: "amber",
-    Icon: Radio
   },
   {
     eyebrow: "VISION",
@@ -86,43 +103,28 @@ const projects = [
       "Built Python-based computer vision tooling for industrial OCR, Data Matrix/barcode decoding, defect detection, and manufacturing automation during internships at Procter & Gamble.",
     highlights: [
       "OCR and Data Matrix/barcode pipelines for industrial label-reading workflows",
-      "3D camera evaluation for defect-detection accuracy and speed",
-      "Preprocessing tuned for varied lighting and surface conditions",
-      "Manufacturing test-stand data collection and analysis"
+      "3D camera evaluation for defect detection under varied conditions",
+      "Semantic-segmentation model improved to 95%",
+      "Automated test-stand data collection and analysis with Grafana"
     ],
-    tags: ["Python", "Computer Vision", "Industrial Automation", "AI"],
-    accent: "cyan",
-    Icon: Activity
-  },
-  {
-    eyebrow: "PRODUCTION",
-    title: "Production Software at SpaceX",
-    description:
-      "Worked on Starshield production software involving scheduling/tasking workflows, authorization/access control, operator-facing tooling, and metrics/alerting.",
-    highlights: [
-      "Angular and .NET",
-      "Scheduling and tasking features for satellite workflows",
-      "Authentication and access-control logic for new user access paths",
-      "Angular UI features plus production metrics and alerting"
-    ],
-    tags: ["Angular", ".NET", "C#", "Production Software"],
+    tags: ["Python", "Computer Vision", "Industrial Automation", "Grafana"],
     accent: "green",
-    Icon: Code2
+    Icon: Activity
   }
 ];
 
 const experience = [
   {
-    company: "IBM",
-    role: "Entry Level Hardware Developer, Pre-Silicon Validation",
+    company: "PointOne",
+    role: "Software Engineer",
     detail:
-      "Starting full-time on a design verification team focused on C++/Python-based validation."
+      "Building AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
   },
   {
     company: "SpaceX",
     role: "Software Engineering Intern",
     detail:
-      "Built production software for operational workflows, access control, and internal tooling."
+      "Led coordination for Starshield production features and built scheduling/tasking workflows, authentication logic, and metrics/alerting."
   },
   {
     company: "Procter & Gamble",
@@ -140,68 +142,77 @@ const experience = [
 
 const skillGroups = [
   {
-    title: "Hardware / RTL",
-    icon: Cpu,
+    title: "Software",
+    icon: Terminal,
+    skills: ["Python", "Go", "C++", "C", "C#", "TypeScript", ".NET", "Angular"]
+  },
+  {
+    title: "Infrastructure / Tooling",
+    icon: Cloud,
     skills: [
-      "SystemVerilog",
-      "Verilog",
-      "FPGA",
-      "RTL Design",
-      "Computer Architecture",
-      "AXI-Stream",
-      "VCS",
-      "Verdi",
-      "Quartus",
-      "ModelSim"
+      "Linux",
+      "Git",
+      "AWS",
+      "Kubernetes",
+      "PostgreSQL",
+      "GitHub Actions",
+      "CI/CD",
+      "Grafana"
     ]
   },
   {
-    title: "Embedded",
-    icon: Radio,
-    skills: ["C", "C++", "STM32", "RTOS", "UART", "SPI", "I2C", "HAL", "Oscilloscopes"]
-  },
-  {
-    title: "Software",
-    icon: Terminal,
-    skills: ["Python", "C#", ".NET", "Angular", "TypeScript", "Git", "Linux"]
-  },
-  {
-    title: "AI / Vision",
+    title: "AI / Evals",
     icon: Activity,
     skills: [
+      "Model evaluation",
+      "Model benchmarking",
+      "Computer vision",
       "OpenCV",
       "OCR",
-      "Data Matrix decoding",
-      "Image preprocessing",
-      "Event-based cameras"
+      "Semantic segmentation"
+    ]
+  },
+  {
+    title: "Hardware / Embedded",
+    icon: Cpu,
+    skills: [
+      "SystemVerilog",
+      "RTL Design",
+      "FPGA",
+      "Computer Architecture",
+      "Design Verification",
+      "VCS",
+      "Verdi",
+      "STM32",
+      "RTOS"
     ]
   }
 ];
 
 const builderDna = [
   {
-    title: "Low-level systems",
-    copy: "I like working where software meets timing, hardware, and physical constraints.",
+    title: "Measure, don't guess",
+    copy: "I'd rather prove a change is better than argue about it: evals, benchmarks, and metrics before opinions.",
+    Icon: Gauge
+  },
+  {
+    title: "Built for production",
+    copy: "I care about software that holds up in production, with reliable workflows, clear alerting, and safe ways to ship changes.",
     Icon: Layers
   },
   {
-    title: "Performance",
-    copy: "I care about latency, throughput, correctness, and understanding what happens at the cycle level.",
-    Icon: Zap
-  },
-  {
-    title: "Hard problems",
-    copy: "I'm drawn to systems most people avoid because they require crossing abstraction boundaries.",
+    title: "Across the stack",
+    copy: "A computer engineering background, from RTL to production services, makes me comfortable crossing abstraction boundaries.",
     Icon: Braces
   }
 ];
 
 const buildLog = [
   { marker: "✓", label: "out-of-order RISC-V processor", tone: "complete" },
-  { marker: "✓", label: "low-latency FPGA packet pipeline", tone: "complete" },
+  { marker: "✓", label: "low-latency FPGA market data pipeline", tone: "complete" },
   { marker: "✓", label: "industrial AI vision tooling @ P&G", tone: "complete" },
   { marker: "✓", label: "production software @ SpaceX", tone: "complete" },
-  { marker: "→", label: "pre-silicon validation @ IBM", tone: "active" }
+  { marker: "→", label: "AI eval platform @ PointOne", tone: "active" }
 ];
 
 const fadeUp = {
@@ -515,7 +526,7 @@ export default function Home() {
               JC
             </span>
             <span className="hidden font-mono text-xs uppercase tracking-[0.2em] text-slate-300 sm:inline">
-              systems builder
+              software engineer
             </span>
           </a>
           <div className="hidden items-center gap-5 font-mono text-xs text-slate-400 md:flex">
@@ -548,16 +559,17 @@ export default function Home() {
             Jayce Clarke
           </h1>
           <p className="mt-4 max-w-2xl text-lg font-medium text-slate-200 sm:text-xl">
-            Hardware Developer @ IBM{" \u00b7 "}Ex-SpaceX
+            Software Engineer @ PointOne{" \u00b7 "}Ex\u2011SpaceX
           </p>
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
-            Hardware/software systems builder working across FPGA/RTL,
-            embedded systems, computer architecture, and production software.
+            Software engineer building AI evaluation infrastructure and
+            production systems, with a computer engineering background that
+            runs from production services down to RTL.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <IconButton href="#systems" Icon={ArrowRight} variant="primary">
-              View Systems I've Built
+              View What I've Built
             </IconButton>
             <IconButton href={LINKS.github} Icon={Github}>
               GitHub
@@ -578,9 +590,9 @@ export default function Home() {
 
       <section id="systems" className="section-shell py-16 md:py-20">
         <SectionHeading
-          eyebrow="Featured systems"
-          title="Hardware modules, packet paths, and production tools."
-          copy="A focused set of projects across CPU microarchitecture, deterministic FPGA datapaths, embedded hardware/software integration, industrial vision, and operator-facing software."
+          eyebrow="Featured work"
+          title="Production software, eval infrastructure, and the systems underneath."
+          copy="AI evaluation infrastructure and production platforms up front, backed by a systems foundation in CPU microarchitecture, FPGA datapaths, and industrial vision."
         />
 
         <div className="grid gap-5 lg:grid-cols-12">
@@ -595,8 +607,8 @@ export default function Home() {
       <section id="timeline" className="section-shell py-16 md:py-20">
         <SectionHeading
           eyebrow="Experience timeline"
-          title="Work that sits close to real systems."
-          copy="From pre-silicon validation and embedded firmware to production software and manufacturing automation."
+          title="From firmware to production software."
+          copy="Embedded firmware and manufacturing automation first, then production platforms at SpaceX and AI evaluation infrastructure at PointOne."
         />
         <ExperienceTimeline />
       </section>
@@ -605,7 +617,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="Technical stack"
           title="Tools grouped by the layer they touch."
-          copy="Comfortable moving from RTL and buses to firmware, production code, and applied computer vision tooling."
+          copy="Day to day in production software, infrastructure, and AI tooling, with a hardware and embedded background that goes down to RTL."
         />
         <div className="grid gap-5 md:grid-cols-2">
           {skillGroups.map((group, index) => (
@@ -617,8 +629,8 @@ export default function Home() {
       <section className="section-shell py-16 md:py-20">
         <SectionHeading
           eyebrow="Builder DNA"
-          title="The through-line: timing, constraints, and depth."
-          copy="A portfolio shape for someone who likes understanding the full path from signal to software."
+          title="The through-line: correctness, measurement, and depth."
+          copy="A software engineer who still likes understanding the full path from signal to software."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {builderDna.map(({ title, copy, Icon }, index) => (
@@ -648,17 +660,16 @@ export default function Home() {
               Contact
             </p>
             <h2 className="mt-3 text-3xl font-semibold text-white">
-              Let's build near the metal.
+              Let's build something that ships.
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300">
-              Open to work and collaborations around hardware/software systems,
-              FPGA pipelines, embedded platforms, computer architecture, and
-              production engineering.
+              Open to conversations about production software, AI evaluation
+              and infrastructure, developer tooling, and systems engineering.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <IconButton href={LINKS.email} Icon={Mail} variant="primary">
-              jaycejc@umich.edu
+              {EMAIL}
             </IconButton>
             <IconButton href={LINKS.linkedin} Icon={Linkedin}>
               LinkedIn
@@ -675,13 +686,13 @@ export default function Home() {
 
       <footer className="section-shell border-t border-slate-800 py-8">
         <div className="flex flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>Jayce Clarke{" \u00b7 "}Hardware/Software Systems Builder</p>
+          <p>Jayce Clarke{" \u00b7 "}Software Engineer</p>
           <a
             href={LINKS.email}
             className="button-focus inline-flex items-center gap-2 rounded-sm text-slate-400 hover:text-white"
           >
             <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            jaycejc@umich.edu
+            {EMAIL}
           </a>
         </div>
       </footer>

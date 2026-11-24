@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Jayce Clarke | Hardware/Software Systems Builder",
+  title: "Jayce Clarke | Software Engineer",
   description:
-    "Portfolio for Jayce Clarke, a Computer Engineering student at the University of Michigan focused on FPGA/RTL, embedded systems, computer architecture, and low-level software."
+    "Portfolio for Jayce Clarke, a software engineer at PointOne building AI evaluation infrastructure and production systems, with a University of Michigan Computer Engineering background."
 };
 
 export default function RootLayout({
