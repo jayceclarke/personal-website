@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Activity,
@@ -215,8 +215,8 @@ function SectionHeading({
       variants={fadeUp}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.35 }}
       className="mb-10 max-w-3xl"
     >
       <p className="font-mono text-xs uppercase tracking-[0.28em] text-signal-cyan">
@@ -281,12 +281,7 @@ function BackForwardCacheGuard() {
 
 function BuildLogPanel() {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 24 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.7, delay: 0.2 }}
-      className="module-card rounded-md p-5 font-mono shadow-module"
-    >
+    <div className="panel-in module-card rounded-md p-5 font-mono shadow-module">
       <div className="mb-4 flex items-center justify-between border-b border-slate-800 pb-3">
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-signal-green shadow-[0_0_14px_rgba(121,242,166,0.8)]" />
@@ -318,13 +313,30 @@ function BuildLogPanel() {
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 function WaveDivider() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // The dash animation can't run on the compositor, so only run it while the
+  // divider is on screen.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[entries.length - 1];
+      el.dataset.visible = entry.isIntersecting ? "true" : "false";
+    });
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="section-shell py-8" aria-hidden="true">
+    <div ref={ref} className="wave-divider section-shell py-8" aria-hidden="true">
       <svg viewBox="0 0 1120 72" className="h-14 w-full text-slate-700">
         <path
           d="M0 38 H110 V18 H190 V38 H290 V56 H390 V38 H510 V18 H590 V38 H740 V56 H840 V38 H950 V18 H1030 V38 H1120"
@@ -364,11 +376,11 @@ function ProjectCard({
       variants={fadeUp}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5, delay: Math.min(index * 0.08, 0.32) }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.15) }}
       whileHover={{ y: -6 }}
       className={cn(
-        "module-card group rounded-md p-5 shadow-module",
+        "module-card group rounded-md p-5 shadow-module will-change-transform",
         index === 0 || index === 1 ? "lg:col-span-6" : "lg:col-span-4"
       )}
     >
@@ -431,8 +443,8 @@ function ExperienceTimeline() {
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.45, delay: index * 0.08 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.15) }}
             className="relative grid gap-4 pl-10 md:grid-cols-2 md:gap-10 md:pl-0"
           >
             <span className="absolute left-0 top-2 h-6 w-6 rounded-full border border-signal-cyan/60 bg-chassis-950 shadow-[0_0_18px_rgba(81,214,255,0.28)] md:left-[calc(50%-12px)]" />
@@ -469,8 +481,8 @@ function SkillGroup({
       variants={fadeUp}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.45, delay: index * 0.08 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.15) }}
       className="rounded-md border border-slate-800 bg-chassis-900/70 p-5"
     >
       <div className="mb-5 flex items-center gap-3">
@@ -498,6 +510,7 @@ export default function Home() {
     <main className="relative min-h-screen overflow-hidden">
       <BackForwardCacheGuard />
       <div className="technical-grid" aria-hidden="true" />
+      <div className="scan-sweep" aria-hidden="true" />
       <div className="noise-vignette" aria-hidden="true" />
 
       <header className="section-shell sticky top-4 z-40">
@@ -525,11 +538,7 @@ export default function Home() {
       </header>
 
       <section className="section-shell grid min-h-[calc(100vh-88px)] items-center gap-10 py-16 md:grid-cols-[1.02fr_0.98fr] md:py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65 }}
-        >
+        <div className="hero-in">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-signal-green">
             B.S.E. Computer Engineering, Michigan &apos;26
           </p>
@@ -557,8 +566,7 @@ export default function Home() {
               Resume
             </IconButton>
           </div>
-
-        </motion.div>
+        </div>
 
         <div>
           <BuildLogPanel />

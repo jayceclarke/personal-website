@@ -61,17 +61,21 @@ body {
   mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
 }
 
-.technical-grid::after {
-  position: absolute;
+/* The sweep lives outside the masked grid so the mask is rasterized once.
+   It steps at 10 Hz (the gradient is too faint for steps to show) and runs a
+   few passes, then stops so the page can go fully idle. */
+.scan-sweep {
+  position: fixed;
   inset: 0;
-  content: "";
+  z-index: -2;
+  pointer-events: none;
   background: linear-gradient(
     180deg,
     transparent,
     rgba(81, 214, 255, 0.055),
     transparent
   );
-  animation: scan 9s linear infinite;
+  animation: scan 9s steps(90) 3 both;
 }
 
 .noise-vignette {
@@ -115,6 +119,21 @@ body {
 .wave-path {
   stroke-dasharray: 13 11;
   animation: dash 16s linear infinite;
+  animation-play-state: paused;
+}
+
+.wave-divider[data-visible="true"] .wave-path {
+  animation-play-state: running;
+}
+
+/* Above-the-fold entrances run from CSS so they start at first paint instead
+   of waiting for the JS bundle to download and hydrate. */
+.hero-in {
+  animation: rise-in 0.5s ease-in-out both;
+}
+
+.panel-in {
+  animation: slide-in 0.55s ease-in-out 0.15s both;
 }
 
 .scope-trace {
@@ -145,6 +164,30 @@ body {
 
   100% {
     transform: translateY(100%);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
