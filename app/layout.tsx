@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Jayce Clarke | Software Engineer",
   description:
-    "Portfolio for Jayce Clarke, a software engineer at PointOne building AI evaluation infrastructure and production systems, with a University of Michigan Computer Engineering background."
+    "Portfolio for Jayce Clarke, a software engineer at PointOne and University of Michigan Computer Engineering graduate, shipping production software from Android apps to AI evaluation infrastructure."
 };
 
 export default function RootLayout({

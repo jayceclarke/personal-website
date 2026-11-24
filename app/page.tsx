@@ -7,15 +7,12 @@ import {
   Activity,
   ArrowRight,
   ArrowUpRight,
-  Braces,
   Cloud,
   Code2,
   Cpu,
   FileText,
-  Gauge,
   GitPullRequest,
   Github,
-  Layers,
   Linkedin,
   Mail,
   Terminal,
@@ -36,18 +33,18 @@ const LINKS = {
 // fields to the project objects and render them inside ProjectCard.
 const projects = [
   {
-    eyebrow: "AI-EVALS",
+    eyebrow: "SOFTWARE",
     title: "Software Engineering at PointOne",
     description:
-      "Built an end-to-end eval platform that replays a full day of production workflows against any PR, comparing system accuracy before and after the change and separating real regressions from model noise.",
+      "Shipping production software at PointOne, from setting up the Android app and getting it live on Google Play to building the eval platform behind every AI-powered task.",
     highlights: [
-      "Replays a full day of production workflows against any PR",
-      "Separates real regressions from model noise",
+      "Set up the Android app end to end and got it live on Google Play",
+      "Eval platform that replays a full day of production workflows against any PR, separating real regressions from model noise",
       "Every AI-powered task made model-agnostic, benchmarked on accuracy, latency, and cost",
       "Models hot-swappable per task in production through a switch",
       "Wired into CI: relevant PRs trigger targeted eval runs and post results back"
     ],
-    tags: ["AI Evals", "Model Benchmarking", "GitHub Actions", "CI", "Production Software"],
+    tags: ["Android", "Google Play", "AI Evals", "GitHub Actions", "CI", "Production Software"],
     accent: "cyan",
     Icon: GitPullRequest
   },
@@ -118,7 +115,7 @@ const experience = [
     company: "PointOne",
     role: "Software Engineer",
     detail:
-      "Building AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
+      "Set up the Android app and got it live on Google Play, and built AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
   },
   {
     company: "SpaceX",
@@ -144,7 +141,7 @@ const skillGroups = [
   {
     title: "Software",
     icon: Terminal,
-    skills: ["Python", "Go", "C++", "C", "C#", "TypeScript", ".NET", "Angular"]
+    skills: ["Python", "Go", "C++", "C", "C#", "TypeScript", ".NET", "Angular", "Android"]
   },
   {
     title: "Infrastructure / Tooling",
@@ -157,6 +154,7 @@ const skillGroups = [
       "PostgreSQL",
       "GitHub Actions",
       "CI/CD",
+      "Google Play",
       "Grafana"
     ]
   },
@@ -189,23 +187,6 @@ const skillGroups = [
   }
 ];
 
-const builderDna = [
-  {
-    title: "Measure, don't guess",
-    copy: "I'd rather prove a change is better than argue about it: evals, benchmarks, and metrics before opinions.",
-    Icon: Gauge
-  },
-  {
-    title: "Built for production",
-    copy: "I care about software that holds up in production, with reliable workflows, clear alerting, and safe ways to ship changes.",
-    Icon: Layers
-  },
-  {
-    title: "Across the stack",
-    copy: "A computer engineering background, from RTL to production services, makes me comfortable crossing abstraction boundaries.",
-    Icon: Braces
-  }
-];
 
 const buildLog = [
   { marker: "✓", label: "out-of-order RISC-V processor", tone: "complete" },
@@ -521,12 +502,9 @@ export default function Home() {
 
       <header className="section-shell sticky top-4 z-40">
         <nav className="flex items-center justify-between rounded-md border border-slate-800/90 bg-chassis-950/75 px-4 py-3 shadow-glow backdrop-blur-xl">
-          <a href="#" className="button-focus flex items-center gap-2 rounded-sm">
+          <a href="#" aria-label="Jayce Clarke, back to top" className="button-focus flex items-center gap-2 rounded-sm">
             <span className="flex h-8 w-8 items-center justify-center rounded border border-signal-cyan/40 bg-signal-cyan/10 font-mono text-xs text-signal-cyan">
               JC
-            </span>
-            <span className="hidden font-mono text-xs uppercase tracking-[0.2em] text-slate-300 sm:inline">
-              software engineer
             </span>
           </a>
           <div className="hidden items-center gap-5 font-mono text-xs text-slate-400 md:flex">
@@ -553,7 +531,7 @@ export default function Home() {
           transition={{ duration: 0.65 }}
         >
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-signal-green">
-            Computer Engineering @ Michigan
+            B.S.E. Computer Engineering, Michigan &apos;26
           </p>
           <h1 className="mt-4 text-5xl font-semibold tracking-normal text-white sm:text-6xl lg:text-7xl">
             Jayce Clarke
@@ -563,9 +541,9 @@ export default function Home() {
             <span className="whitespace-nowrap">Ex-SpaceX</span>
           </p>
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
-            Software engineer building AI evaluation infrastructure and
-            production systems, with a computer engineering background that
-            runs from production services down to RTL.
+            Software engineer shipping production software, from an Android
+            app on Google Play to AI evaluation infrastructure, with a computer
+            engineering background that goes down to RTL.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -592,8 +570,8 @@ export default function Home() {
       <section id="systems" className="section-shell py-16 md:py-20">
         <SectionHeading
           eyebrow="Featured work"
-          title="Production software, eval infrastructure, and the systems underneath."
-          copy="AI evaluation infrastructure and production platforms up front, backed by a systems foundation in CPU microarchitecture, FPGA datapaths, and industrial vision."
+          title="Production software and the systems underneath."
+          copy="Production work at PointOne and SpaceX up front, backed by a systems foundation in CPU microarchitecture, FPGA datapaths, and industrial vision."
         />
 
         <div className="grid gap-5 lg:grid-cols-12">
@@ -609,7 +587,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="Experience timeline"
           title="From firmware to production software."
-          copy="Embedded firmware and manufacturing automation first, then production platforms at SpaceX and AI evaluation infrastructure at PointOne."
+          copy="Embedded firmware and manufacturing automation first, then production platforms at SpaceX, and now full-time software engineering at PointOne."
         />
         <ExperienceTimeline />
       </section>
@@ -623,33 +601,6 @@ export default function Home() {
         <div className="grid gap-5 md:grid-cols-2">
           {skillGroups.map((group, index) => (
             <SkillGroup key={group.title} group={group} index={index} />
-          ))}
-        </div>
-      </section>
-
-      <section className="section-shell py-16 md:py-20">
-        <SectionHeading
-          eyebrow="Builder DNA"
-          title="The through-line: correctness, measurement, and depth."
-          copy="A software engineer who still likes understanding the full path from signal to software."
-        />
-        <div className="grid gap-5 md:grid-cols-3">
-          {builderDna.map(({ title, copy, Icon }, index) => (
-            <motion.div
-              key={title}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="rounded-md border border-slate-800 bg-white/[0.03] p-6"
-            >
-              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded border border-signal-green/35 bg-signal-green/10 text-signal-green">
-                <Icon className="h-5 w-5" aria-hidden="true" />
-              </div>
-              <h3 className="text-lg font-semibold text-white">{title}</h3>
-              <p className="mt-3 text-sm leading-6 text-slate-300">{copy}</p>
-            </motion.div>
           ))}
         </div>
       </section>
