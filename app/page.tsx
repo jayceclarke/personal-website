@@ -37,7 +37,7 @@ const LINKS = {
 const projects = [
   {
     eyebrow: "AI-EVALS",
-    title: "Production Eval Platform at PointOne",
+    title: "Software Engineering at PointOne",
     description:
       "Built an end-to-end eval platform that replays a full day of production workflows against any PR, comparing system accuracy before and after the change and separating real regressions from model noise.",
     highlights: [
@@ -212,7 +212,7 @@ const buildLog = [
   { marker: "✓", label: "low-latency FPGA market data pipeline", tone: "complete" },
   { marker: "✓", label: "industrial AI vision tooling @ P&G", tone: "complete" },
   { marker: "✓", label: "production software @ SpaceX", tone: "complete" },
-  { marker: "→", label: "AI eval platform @ PointOne", tone: "active" }
+  { marker: "→", label: "software engineer @ PointOne", tone: "active" }
 ];
 
 const fadeUp = {
@@ -559,7 +559,8 @@ export default function Home() {
             Jayce Clarke
           </h1>
           <p className="mt-4 max-w-2xl text-lg font-medium text-slate-200 sm:text-xl">
-            Software Engineer @ PointOne{" \u00b7 "}Ex\u2011SpaceX
+            Software Engineer @ PointOne{" \u00b7 "}
+            <span className="whitespace-nowrap">Ex-SpaceX</span>
           </p>
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
             Software engineer building AI evaluation infrastructure and
