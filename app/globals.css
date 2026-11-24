@@ -136,12 +136,6 @@ body {
   animation: slide-in 0.55s ease-in-out 0.15s both;
 }
 
-.scope-trace {
-  stroke-dasharray: 220;
-  stroke-dashoffset: 220;
-  animation: drawTrace 3.4s ease-in-out infinite;
-}
-
 .section-shell {
   width: min(1120px, calc(100% - 32px));
   margin-inline: auto;
@@ -197,30 +191,13 @@ body {
   }
 }
 
-@keyframes drawTrace {
-  0% {
-    stroke-dashoffset: 220;
-    opacity: 0.35;
-  }
-
-  42%,
-  68% {
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-
-  100% {
-    stroke-dashoffset: -220;
-    opacity: 0.35;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }

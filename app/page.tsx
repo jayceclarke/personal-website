@@ -318,26 +318,34 @@ function BuildLogPanel() {
 }
 
 function WaveDivider() {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<SVGSVGElement>(null);
 
   // The dash animation can't run on the compositor, so only run it while the
-  // divider is on screen.
+  // divider line itself is on screen.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries[entries.length - 1];
-      el.dataset.visible = entry.isIntersecting ? "true" : "false";
-    });
+    if (typeof IntersectionObserver === "undefined") {
+      el.dataset.visible = "true";
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[entries.length - 1];
+        el.dataset.visible = entry.isIntersecting ? "true" : "false";
+      },
+      { rootMargin: "0px 0px -8px 0px" }
+    );
     observer.observe(el);
 
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={ref} className="wave-divider section-shell py-8" aria-hidden="true">
-      <svg viewBox="0 0 1120 72" className="h-14 w-full text-slate-700">
+    <div className="section-shell py-8" aria-hidden="true">
+      <svg ref={ref} viewBox="0 0 1120 72" className="wave-divider h-14 w-full text-slate-700">
         <path
           d="M0 38 H110 V18 H190 V38 H290 V56 H390 V38 H510 V18 H590 V38 H740 V56 H840 V38 H950 V18 H1030 V38 H1120"
           fill="none"
@@ -372,63 +380,61 @@ function ProjectCard({
   const Icon = project.Icon;
 
   return (
-    <motion.article
+    <motion.div
       variants={fadeUp}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
       transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.15) }}
-      whileHover={{ y: -6 }}
-      className={cn(
-        "module-card group rounded-md p-5 shadow-module will-change-transform",
-        index === 0 || index === 1 ? "lg:col-span-6" : "lg:col-span-4"
-      )}
+      className={index === 0 || index === 1 ? "lg:col-span-6" : "lg:col-span-4"}
     >
-      <div className="relative z-10">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <div className={cn("rounded border px-3 py-1 font-mono text-xs", accentClass)}>
-            {project.eyebrow}
-          </div>
-          <div className={cn("rounded border p-2", accentClass)}>
-            <Icon className="h-4 w-4" aria-hidden="true" />
-          </div>
-        </div>
-
-        <h3 className="text-xl font-semibold tracking-normal text-white">
-          {project.title}
-        </h3>
-        <p className="mt-3 text-sm leading-6 text-slate-300">{project.description}</p>
-
-        <div className="mt-6 space-y-3">
-          {project.highlights.map((highlight) => (
-            <div key={highlight} className="flex gap-3 text-sm text-slate-300">
-              <span
-                className={cn(
-                  "mt-2 h-1.5 w-1.5 shrink-0 rounded-full",
-                  project.accent === "green"
-                    ? "bg-signal-green"
-                    : project.accent === "amber"
-                      ? "bg-signal-amber"
-                      : "bg-signal-cyan"
-                )}
-              />
-              <span>{highlight}</span>
+      <article className="module-card group h-full rounded-md p-5 shadow-module transition-transform duration-300 ease-in-out hover:-translate-y-1.5">
+        <div className="relative z-10">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div className={cn("rounded border px-3 py-1 font-mono text-xs", accentClass)}>
+              {project.eyebrow}
             </div>
-          ))}
-        </div>
+            <div className={cn("rounded border p-2", accentClass)}>
+              <Icon className="h-4 w-4" aria-hidden="true" />
+            </div>
+          </div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded border border-slate-700/80 bg-black/20 px-2.5 py-1 font-mono text-[11px] text-slate-300"
-            >
-              {tag}
-            </span>
-          ))}
+          <h3 className="text-xl font-semibold tracking-normal text-white">
+            {project.title}
+          </h3>
+          <p className="mt-3 text-sm leading-6 text-slate-300">{project.description}</p>
+
+          <div className="mt-6 space-y-3">
+            {project.highlights.map((highlight) => (
+              <div key={highlight} className="flex gap-3 text-sm text-slate-300">
+                <span
+                  className={cn(
+                    "mt-2 h-1.5 w-1.5 shrink-0 rounded-full",
+                    project.accent === "green"
+                      ? "bg-signal-green"
+                      : project.accent === "amber"
+                        ? "bg-signal-amber"
+                        : "bg-signal-cyan"
+                  )}
+                />
+                <span>{highlight}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded border border-slate-700/80 bg-black/20 px-2.5 py-1 font-mono text-[11px] text-slate-300"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
-    </motion.article>
+      </article>
+    </motion.div>
   );
 }
 
