@@ -46,10 +46,9 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Eval platform that replays a full day of production workflows against any PR, separating real regressions from model noise",
           "Every AI-powered task made model-agnostic, benchmarked on accuracy, latency, and cost",
           "Models hot-swappable per task in production through a switch",
-          "Wired into CI: relevant PRs trigger targeted eval runs and post results back",
-          "Also set up the Android app and got it live on Google Play"
+          "Wired into CI: relevant PRs trigger targeted eval runs and post results back"
         ],
-        tags: ["AI Evals", "GitHub Actions", "CI", "Android"],
+        tags: ["AI Evals", "GitHub Actions", "CI"],
         place: "PointOne",
         period: "2026 – Present",
         current: true
@@ -126,7 +125,7 @@ const experience: {
     company: "PointOne",
     roles: [{ title: "Software Engineer", dates: "Aug 2026 – Present", current: true }],
     detail:
-      "Building AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking. Also set up the Android app and got it live on Google Play."
+      "Building AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
   },
   {
     company: "SpaceX",
@@ -156,7 +155,7 @@ const experience: {
 const skillGroups = [
   {
     title: "Software",
-    skills: ["Python", "Go", "C++", "C", "C#", "TypeScript", ".NET", "Angular", "Android"]
+    skills: ["Python", "Go", "C++", "C", "C#", "TypeScript", ".NET", "Angular"]
   },
   {
     title: "Infrastructure / Tooling",
