@@ -555,11 +555,6 @@ export default function Home() {
             Software Engineer @ PointOne{" \u00b7 "}
             <span className="whitespace-nowrap">Ex-SpaceX</span>
           </p>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
-            Software engineer shipping production software, from an Android
-            app on Google Play to AI evaluation infrastructure, with a computer
-            engineering background that goes down to RTL.
-          </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <IconButton href="#systems" Icon={ArrowRight} variant="primary">
