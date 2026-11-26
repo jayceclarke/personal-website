@@ -39,32 +39,32 @@ const projectGroups: { label: string; projects: Project[] }[] = [
     label: "Software",
     projects: [
       {
-        title: "AI evals & the Android app",
+        title: "AI evaluation platform",
         summary:
-          "Shipping production software at PointOne, from setting up the Android app and getting it live on Google Play to building the eval platform behind every AI-powered task.",
+          "Shipping production software at PointOne, centered on the eval platform behind every AI-powered task.",
         highlights: [
-          "Set up the Android app end to end and got it live on Google Play",
           "Eval platform that replays a full day of production workflows against any PR, separating real regressions from model noise",
           "Every AI-powered task made model-agnostic, benchmarked on accuracy, latency, and cost",
           "Models hot-swappable per task in production through a switch",
-          "Wired into CI: relevant PRs trigger targeted eval runs and post results back"
+          "Wired into CI: relevant PRs trigger targeted eval runs and post results back",
+          "Also set up the Android app and got it live on Google Play"
         ],
-        tags: ["Android", "Google Play", "AI Evals", "GitHub Actions", "CI", "Production Software"],
+        tags: ["AI Evals", "GitHub Actions", "CI", "Android"],
         place: "PointOne",
         period: "2026 – Present",
         current: true
       },
       {
-        title: "Starshield production software",
+        title: "Starshield scheduling & tasking",
         summary:
-          "Worked on Starshield production software at SpaceX: led team coordination for production features and built scheduling/tasking workflows, authentication logic, and metrics/alerting.",
+          "Built scheduling and tasking workflows, authentication logic, and metrics/alerting for Starshield at SpaceX, and led team coordination for its production features.",
         highlights: [
           "Owned task breakdown and delivery tracking for Starshield production features",
           "Scheduling and tasking workflows for satellite operations",
           "Expanded authentication logic for a production platform",
           "Angular metrics and alerting for faster issue detection"
         ],
-        tags: ["Angular", ".NET", "C#", "Production Software"],
+        tags: ["Angular", ".NET", "C#"],
         place: "SpaceX",
         period: "2025"
       },
@@ -126,7 +126,7 @@ const experience: {
     company: "PointOne",
     roles: [{ title: "Software Engineer", dates: "Aug 2026 – Present", current: true }],
     detail:
-      "Set up the Android app and got it live on Google Play, and built AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
+      "Building AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking. Also set up the Android app and got it live on Google Play."
   },
   {
     company: "SpaceX",
@@ -168,7 +168,6 @@ const skillGroups = [
       "PostgreSQL",
       "GitHub Actions",
       "CI/CD",
-      "Google Play",
       "Grafana"
     ]
   },

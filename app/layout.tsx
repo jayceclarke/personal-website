@@ -22,7 +22,7 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Jayce Clarke | Software Engineer",
   description:
-    "Portfolio for Jayce Clarke, a software engineer at PointOne and University of Michigan Computer Engineering graduate, shipping production software from Android apps to AI evaluation infrastructure."
+    "Portfolio for Jayce Clarke, a software engineer at PointOne building AI evaluation infrastructure, previously at SpaceX, and a University of Michigan Computer Engineering graduate."
 };
 
 export const viewport: Viewport = {
