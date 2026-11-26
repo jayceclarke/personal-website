@@ -48,7 +48,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Models hot-swappable per task in production through a switch",
           "Wired into CI: relevant PRs trigger targeted eval runs and post results back"
         ],
-        tags: ["AI Evals", "GitHub Actions", "CI"],
+        tags: ["AI evals", "GitHub Actions", "CI"],
         place: "PointOne",
         period: "2026 – Present",
         current: true
@@ -56,7 +56,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
       {
         title: "Starshield scheduling & tasking",
         summary:
-          "Built scheduling and tasking workflows, expanded authentication logic, and added metrics/alerting for Starshield at SpaceX, and led team coordination for its production features.",
+          "Built scheduling and tasking workflows, expanded authentication logic, and added metrics/alerting for Starshield at SpaceX, while leading team coordination for its production features.",
         highlights: [
           "Owned task breakdown and delivery tracking for Starshield production features",
           "Scheduling and tasking workflows for satellite operations",
@@ -77,7 +77,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Semantic-segmentation model improved to 95%",
           "Automated test-stand data collection and analysis with Grafana"
         ],
-        tags: ["Python", "Computer Vision", "Industrial Automation", "Grafana"],
+        tags: ["Python", "Computer vision", "Industrial automation", "Grafana"],
         place: "Procter & Gamble",
         period: "2024, 2025"
       }
@@ -96,7 +96,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Verified with Synopsys VCS and Verdi testbenches",
           "Achieved a 7.8 ns critical path"
         ],
-        tags: ["SystemVerilog", "Computer Architecture", "VCS", "Verdi", "RISC-V"]
+        tags: ["SystemVerilog", "Computer architecture", "VCS", "Verdi", "RISC-V"]
       },
       {
         title: "Low-latency FPGA market data pipeline",
@@ -108,7 +108,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Index-arbitrage signal generation on a 64-bit AXI-Stream datapath",
           "Validated with cocotb and a Python reference model"
         ],
-        tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low Latency"]
+        tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low latency"]
       }
     ]
   }
@@ -196,12 +196,13 @@ const skillGroups = [
 ];
 
 /**
- * Hyphenated names, and numbers with their units, that must never split
- * across lines ("RISC- / V", "250 / MHz"). Each match is wrapped in a nowrap
+ * Hyphenated names, company names, and figures with their units or the word
+ * before them, that must never split across lines ("RISC- / V", "250 / MHz",
+ * "Procter & / Gamble", a lone "95%"). Each match is wrapped in a nowrap
  * span, like Ex-SpaceX in the hero, rather than using U+2011, which the web
  * fonts may not have.
  */
-const UNBREAKABLE = /(RISC-V|R10K-style|AXI-Stream|64-bit|250 MHz|7\.8 ns)/;
+const UNBREAKABLE = /(RISC-V|R10K-style|AXI-Stream|64-bit|250 MHz|7\.8 ns|Procter & Gamble|to 95%)/;
 
 function keepTogether(text: string): ReactNode {
   const parts = text.split(UNBREAKABLE);
@@ -495,7 +496,7 @@ export default function Home() {
 
       <main id="main">
         <section className="hero shell" aria-labelledby="hero-name">
-          <p className="hero-meta enter">B.S.E. Computer Engineering, Michigan ’26</p>
+          <p className="hero-meta enter">B.S.E. Computer Engineering, Michigan&nbsp;’26</p>
 
           <div className="hero-body">
             {/* The space sits inside the first span: each word has its own
@@ -523,8 +524,13 @@ export default function Home() {
                   Selected work
                   <ArrowDown className="h-4 w-4" aria-hidden="true" strokeWidth={1.75} />
                 </a>
-                <TextLink href={LINKS.github}>GitHub</TextLink>
-                <TextLink href={LINKS.resume}>Resume</TextLink>
+                {/* GitHub and Resume wrap as a pair: where the row is too
+                    narrow, the button keeps the first line and the two links
+                    share the second, so Resume never drops onto a line alone. */}
+                <div className="hero-links">
+                  <TextLink href={LINKS.github}>GitHub</TextLink>
+                  <TextLink href={LINKS.resume}>Resume</TextLink>
+                </div>
               </div>
             </div>
           </div>
