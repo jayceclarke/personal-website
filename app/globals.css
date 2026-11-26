@@ -2,193 +2,823 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------------
+   Tokens
+   Paper, three inks, one hairline, one accent. Every text colour clears
+   WCAG AA on --paper (ink 16.5:1, ink-2 9.9:1, ink-3 4.9:1, accent 4.9:1).
+   ------------------------------------------------------------------------ */
 :root {
-  color-scheme: dark;
-  --bg: #05070b;
-  --panel: #0b111b;
-  --line: rgba(148, 163, 184, 0.18);
-  --cyan: #51d6ff;
-  --green: #79f2a6;
-  --amber: #ffc857;
-}
+  color-scheme: light;
+  --paper: #f4f2ed;
+  --ink: #141413;
+  --ink-2: #3d3c38;
+  --ink-3: #6b6963;
+  --rule: #d6d2c9;
+  --accent: #bf3a1a;
 
-* {
-  box-sizing: border-box;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --col-gap: clamp(1rem, 2.2vw, 2rem);
+  --shell: 80rem;
+  --section-space: clamp(5.5rem, 11vw, 10rem);
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 1.5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  min-height: 100vh;
   margin: 0;
-  overflow-x: hidden;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(81, 214, 255, 0.13), transparent 30rem),
-    radial-gradient(circle at 82% 8%, rgba(255, 200, 87, 0.08), transparent 28rem),
-    radial-gradient(circle at 55% 76%, rgba(121, 242, 166, 0.08), transparent 34rem),
-    var(--bg);
-  color: #e6edf3;
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: rgba(81, 214, 255, 0.28);
-  color: white;
+  background: var(--ink);
+  color: var(--paper);
 }
 
-.technical-grid {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
-    linear-gradient(rgba(81, 214, 255, 0.04) 1px, transparent 1px);
-  background-size:
-    48px 48px,
-    48px 48px,
-    12px 12px;
-  mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
 }
 
-/* The sweep lives outside the masked grid so the mask is rasterized once.
-   It steps at 10 Hz (the gradient is too faint for steps to show) and runs a
-   few passes, then stops so the page can go fully idle. */
-.scan-sweep {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(81, 214, 255, 0.055),
-    transparent
-  );
-  animation: scan 9s steps(90) 3 both;
-}
-
-.noise-vignette {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    linear-gradient(to bottom, rgba(5, 7, 11, 0.05), rgba(5, 7, 11, 0.78)),
-    radial-gradient(circle at center, transparent 0, rgba(0, 0, 0, 0.56) 100%);
-}
-
-.module-card {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background:
-    linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(8, 13, 20, 0.96)),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 23px,
-      rgba(81, 214, 255, 0.035) 24px
-    );
-}
-
-.module-card::before {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background:
-    linear-gradient(90deg, transparent, rgba(81, 214, 255, 0.1), transparent),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 42%);
-  opacity: 0;
-  transition: opacity 220ms ease;
-}
-
-.module-card:hover::before {
-  opacity: 1;
-}
-
-.wave-path {
-  stroke-dasharray: 13 11;
-  animation: dash 16s linear infinite;
-  animation-play-state: paused;
-}
-
-.wave-divider[data-visible="true"] .wave-path {
-  animation-play-state: running;
-}
-
-/* Above-the-fold entrances run from CSS so they start at first paint instead
-   of waiting for the JS bundle to download and hydrate. */
-.hero-in {
-  animation: rise-in 0.5s ease-in-out both;
-}
-
-.panel-in {
-  animation: slide-in 0.55s ease-in-out 0.15s both;
-}
-
-.section-shell {
-  width: min(1120px, calc(100% - 32px));
+.shell {
+  width: min(var(--shell), 100% - 2 * var(--gutter));
   margin-inline: auto;
 }
 
-.button-focus {
-  outline: none;
+/* 4 columns on phones, 8 on tablets, 12 from 1024px. Tailwind's col-span-*
+   utilities at the matching sm/lg breakpoints place things on it. */
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--col-gap);
 }
 
-.button-focus:focus-visible {
+@media (min-width: 640px) {
+  .layout-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+.mono,
+.section-num,
+.hero-meta,
+.site-nav-num,
+.project-num,
+.project-period,
+.project-tags,
+.group-label,
+.xp-dates,
+.contact-label,
+.contact-handle,
+.site-footer,
+kbd {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ------------------------------------------------------------------------
+   Header
+   ------------------------------------------------------------------------ */
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: 0.75rem;
+  z-index: 60;
+  padding: 0.5rem 0.75rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.875rem;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 4.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.wordmark {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  gap: clamp(1rem, 2.6vw, 2.25rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+}
+
+.site-nav a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.site-nav a:hover {
+  color: var(--ink);
+}
+
+.site-nav-num {
+  display: none;
+  font-size: 0.6875rem;
+  color: var(--ink-3);
+}
+
+@media (min-width: 640px) {
+  .site-nav-num {
+    display: inline;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   Hero
+   ------------------------------------------------------------------------ */
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(3.5rem, 12vh, 10rem);
+  min-height: clamp(30rem, calc(100svh - 4.25rem - 13rem), 46rem);
+  padding-block: clamp(1.75rem, 4vh, 2.5rem) 0;
+}
+
+.hero-meta {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+/* Sized to the measure: "Jayce Clarke" is ~5.25em wide, so this fills the
+   column with a little slack for classic scrollbars, capped at the shell. */
+.hero-name {
+  margin: 0 0 0 -0.012em;
+  padding-bottom: 0.13em;
+  font-size: min(calc((100vw - 2 * var(--gutter)) / 5.4), 15.15rem);
+  font-weight: 600;
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+}
+
+/* Phones stack the name on two lines so it can be set larger. */
+@media (max-width: 639px) {
+  .hero-name {
+    font-size: calc((100vw - 2 * var(--gutter)) / 2.95);
+    line-height: 0.84;
+  }
+
+  .hero-name span {
+    display: block;
+  }
+}
+
+.hero-foot {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ink);
+  row-gap: 1.5rem;
+  align-items: center;
+}
+
+.hero-title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.1vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+/* On phones "Ex-SpaceX" drops to its own line instead of leaving the
+   separator dangling at a line end. */
+@media (max-width: 639px) {
+  .hero-sep {
+    display: none;
+  }
+
+  .hero-ex {
+    display: block;
+  }
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .hero-actions {
+    gap: 0.75rem 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-actions {
+    justify-content: flex-end;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2.875rem;
+  padding: 0 1.15rem;
+  border-radius: 2px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 150ms ease;
+}
+
+.btn:hover {
+  background: var(--accent);
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.text-link-label {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 1px;
+  transition: color 150ms ease;
+}
+
+.text-link-icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 150ms ease, color 150ms ease;
+}
+
+.text-link:hover,
+.text-link:hover .text-link-icon {
+  color: var(--accent);
+}
+
+.text-link:hover .text-link-icon {
+  transform: translate(2px, -2px);
+}
+
+/* CSS-only entrance so the hero is painted with the first frame of HTML,
+   not after hydration. Finite, transform/opacity only. */
+.enter {
+  animation: enter 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   Sections
+   ------------------------------------------------------------------------ */
+.section {
+  padding-top: var(--section-space);
+}
+
+.hero + .section {
+  padding-top: clamp(3rem, 6vw, 4.5rem);
+}
+
+.section-head {
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--ink);
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+  row-gap: 0.75rem;
+}
+
+.section-num {
+  margin: 0;
+  padding-top: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--accent);
+}
+
+.section-title {
+  margin: 0;
+  font-size: clamp(2.75rem, 6vw, 5.25rem);
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+}
+
+.section-lede {
+  padding-top: 0.25rem;
+}
+
+.section-lede p {
+  margin: 0;
+  max-width: 26ch;
+  font-size: clamp(1.25rem, 2vw, 1.625rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.section-lede .section-note {
+  margin-top: 1.25rem;
+  max-width: 44ch;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+
+@media (min-width: 640px) {
+  .section-lede {
+    margin-top: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-lede {
+    margin-top: 0;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   01 Work: an index, not cards
+   ------------------------------------------------------------------------ */
+.work-group + .work-group {
+  margin-top: clamp(3.5rem, 7vw, 6rem);
+}
+
+.group-label {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--ink);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.group-label h3 {
+  margin: 0;
+  font-size: inherit;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.group-col {
+  color: var(--ink-3);
+}
+
+.project-list,
+.xp-list,
+.stack-list,
+.project-highlights,
+.contact-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-row {
+  row-gap: 1.25rem;
+  padding-block: 1.75rem 2.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.project-rail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 1rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .project-rail {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0.2rem;
+  }
+}
+
+.project-num {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+@media (min-width: 640px) {
+  .project-num {
+    margin-bottom: 0.6rem;
+  }
+}
+
+.project-place {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.project-period {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.live-dot {
+  display: inline-block;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 999px;
+  background: var(--accent);
+  flex: none;
+}
+
+.project-title {
+  margin: 0;
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.project-summary {
+  margin: 0.85rem 0 0;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+.project-tags {
+  margin: 1.1rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.7;
+  color: var(--ink-3);
+}
+
+.project-highlights {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+@media (min-width: 1024px) {
+  .project-highlights {
+    padding-top: 0.3rem;
+  }
+}
+
+.project-highlights li {
+  position: relative;
+  padding-left: 1.4rem;
+}
+
+.project-highlights li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.74em;
+  width: 0.65rem;
+  height: 1px;
+  background: var(--ink-3);
+}
+
+/* ------------------------------------------------------------------------
+   02 Experience
+   ------------------------------------------------------------------------ */
+.xp-list {
+  border-top: 1px solid var(--rule);
+}
+
+.xp-entry {
+  padding-block: 1.6rem 1.8rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.xp-entry {
+  row-gap: 0.4rem;
+  align-items: baseline;
+}
+
+.xp-dates {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.xp-dates:not(:first-child) {
+  margin-top: 1.1rem;
+}
+
+.xp-title {
+  margin: 0;
+  font-size: clamp(1.1875rem, 1.6vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.xp-company {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+
+.xp-detail {
+  margin: 0.6rem 0 0;
+  max-width: 52ch;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+@media (min-width: 640px) {
+  .xp-dates:not(:first-child) {
+    margin-top: 0.9rem;
+  }
+}
+
+/* Wide screens: the detail sits beside the role(s) instead of under them. */
+@media (min-width: 1024px) {
+  .xp-detail {
+    grid-row: 1 / span var(--rows, 1);
+    margin-top: 0;
+    align-self: start;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   03 Stack
+   ------------------------------------------------------------------------ */
+.stack-grid {
+  row-gap: 2.75rem;
+}
+
+.stack-title {
+  margin: 0 0 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.stack-list {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--ink-2);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* ------------------------------------------------------------------------
+   04 Contact
+   ------------------------------------------------------------------------ */
+.contact-body {
+  row-gap: 0.75rem;
+  align-items: baseline;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.contact-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.contact-email {
+  justify-self: start;
+  max-width: 100%;
+  font-size: min(calc((100vw - 2 * var(--gutter)) / 12.2), 5.75rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 2px no-repeat;
+  padding-bottom: 0.08em;
+  transition: color 150ms ease;
+}
+
+@media (min-width: 640px) {
+  .contact-email {
+    font-size: min(calc((100vw - 2 * var(--gutter)) * 0.75 / 12.2), 5.75rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .contact-email {
+    font-size: min(calc((100vw - 2 * var(--gutter)) * 0.83 / 12.2), 5.75rem);
+  }
+}
+
+.contact-email:hover {
+  color: var(--accent);
+}
+
+.contact-links {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  row-gap: 1.25rem;
+}
+
+.contact-links li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--rule);
+}
+
+.contact-links .text-link {
+  align-self: flex-start;
+  font-size: 1.125rem;
+}
+
+.contact-handle {
+  font-size: 0.75rem;
+  color: var(--ink-3);
+}
+
+/* ------------------------------------------------------------------------
+   Footer
+   ------------------------------------------------------------------------ */
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem 2rem;
+  margin-top: clamp(5rem, 9vw, 7.5rem);
+  padding-block: 1.5rem 2rem;
+  border-top: 1px solid var(--ink);
+  font-size: 0.75rem;
+  color: var(--ink-3);
+}
+
+@media (min-width: 640px) {
+  .site-footer {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.site-footer p {
+  margin: 0;
+  color: var(--ink);
+}
+
+.site-footer .colophon {
+  color: var(--ink-3);
+}
+
+/* The grid toggle is a keyboard-and-pointer nicety; keep phones uncluttered. */
+.footer-link.footer-grid-toggle {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .footer-link.footer-grid-toggle {
+    display: inline-flex;
+  }
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink-3);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.footer-link:hover {
+  color: var(--ink);
+}
+
+kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.25rem;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  font-size: 0.6875rem;
+  line-height: 1;
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------------------------------
+   Grid overlay (press G)
+   ------------------------------------------------------------------------ */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.grid-overlay span {
+  background: rgba(191, 58, 26, 0.05);
   box-shadow:
-    0 0 0 2px #05070b,
-    0 0 0 4px rgba(81, 214, 255, 0.75);
+    inset 1px 0 rgba(191, 58, 26, 0.22),
+    inset -1px 0 rgba(191, 58, 26, 0.22);
 }
 
-@keyframes scan {
-  0% {
-    transform: translateY(-100%);
-  }
-
-  100% {
-    transform: translateY(100%);
-  }
+.grid-overlay span:nth-child(n + 5) {
+  display: none;
 }
 
-@keyframes rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
+@media (min-width: 640px) {
+  .grid-overlay span:nth-child(n + 5) {
+    display: block;
   }
 
-  to {
-    opacity: 1;
-    transform: none;
+  .grid-overlay span:nth-child(n + 9) {
+    display: none;
   }
 }
 
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateX(24px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
+@media (min-width: 1024px) {
+  .grid-overlay span:nth-child(n + 9) {
+    display: block;
   }
 }
 
-@keyframes dash {
-  to {
-    stroke-dashoffset: -240;
-  }
+/* ------------------------------------------------------------------------
+   Scroll reveal: only blocks that start below the fold get .is-pending, and
+   only from JS, so no-JS and above-the-fold content is always visible.
+   ------------------------------------------------------------------------ */
+[data-reveal] {
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[data-reveal].is-pending {
+  opacity: 0;
+  transform: translateY(18px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -200,5 +830,14 @@ body {
     animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-reveal].is-pending {
+    opacity: 1;
+    transform: none;
   }
 }

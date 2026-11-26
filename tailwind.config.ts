@@ -8,27 +8,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        chassis: {
-          950: "#05070b",
-          900: "#080d14",
-          850: "#0b111b",
-          800: "#101826",
-          700: "#1a2636"
+        paper: "var(--paper)",
+        ink: {
+          DEFAULT: "var(--ink)",
+          2: "var(--ink-2)",
+          3: "var(--ink-3)"
         },
-        signal: {
-          cyan: "#51d6ff",
-          green: "#79f2a6",
-          amber: "#ffc857",
-          red: "#ff6b6b"
-        }
-      },
-      boxShadow: {
-        glow: "0 0 36px rgba(81, 214, 255, 0.16)",
-        module: "0 24px 80px rgba(0, 0, 0, 0.32)"
+        rule: "var(--rule)",
+        accent: "var(--accent)"
       },
       fontFamily: {
         sans: [
-          "Inter",
+          "var(--font-sans)",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
@@ -37,10 +28,10 @@ const config: Config = {
           "sans-serif"
         ],
         mono: [
-          "IBM Plex Mono",
+          "var(--font-mono)",
+          "ui-monospace",
           "SFMono-Regular",
           "Menlo",
-          "Monaco",
           "Consolas",
           "monospace"
         ]

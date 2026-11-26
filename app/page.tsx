@@ -1,23 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useRef, type ReactNode } from "react";
-import type { LucideIcon } from "lucide-react";
-import {
-  Activity,
-  ArrowRight,
-  ArrowUpRight,
-  Cloud,
-  Code2,
-  Cpu,
-  FileText,
-  GitPullRequest,
-  Github,
-  Linkedin,
-  Mail,
-  Terminal,
-  Workflow
-} from "lucide-react";
+import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { ArrowDown, ArrowUp, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const EMAIL = "jaycejclarke@gmail.com";
@@ -29,123 +13,153 @@ const LINKS = {
   email: `mailto:${EMAIL}`
 };
 
+const sections = [
+  { id: "work", num: "01", label: "Work" },
+  { id: "experience", num: "02", label: "Experience" },
+  { id: "stack", num: "03", label: "Stack" },
+  { id: "contact", num: "04", label: "Contact" }
+] as const;
+
+type Project = {
+  title: string;
+  summary: string;
+  highlights: string[];
+  tags: string[];
+  /** Where the work happened, or the discipline for independent builds. */
+  place: string;
+  /** Only shown where the timing is known. */
+  period?: string;
+  current?: boolean;
+};
+
 // TODO: If you add real project screenshots or diagrams later, add imageUrl
-// fields to the project objects and render them inside ProjectCard.
-const projects = [
+// fields to the project objects and render them inside ProjectRow.
+const projectGroups: { label: string; projects: Project[] }[] = [
   {
-    eyebrow: "SOFTWARE",
-    title: "Software Engineering at PointOne",
-    description:
-      "Shipping production software at PointOne, from setting up the Android app and getting it live on Google Play to building the eval platform behind every AI-powered task.",
-    highlights: [
-      "Set up the Android app end to end and got it live on Google Play",
-      "Eval platform that replays a full day of production workflows against any PR, separating real regressions from model noise",
-      "Every AI-powered task made model-agnostic, benchmarked on accuracy, latency, and cost",
-      "Models hot-swappable per task in production through a switch",
-      "Wired into CI: relevant PRs trigger targeted eval runs and post results back"
-    ],
-    tags: ["Android", "Google Play", "AI Evals", "GitHub Actions", "CI", "Production Software"],
-    accent: "cyan",
-    Icon: GitPullRequest
+    label: "Software",
+    projects: [
+      {
+        title: "AI evals & the Android app",
+        summary:
+          "Shipping production software at PointOne, from setting up the Android app and getting it live on Google Play to building the eval platform behind every AI-powered task.",
+        highlights: [
+          "Set up the Android app end to end and got it live on Google Play",
+          "Eval platform that replays a full day of production workflows against any PR, separating real regressions from model noise",
+          "Every AI-powered task made model-agnostic, benchmarked on accuracy, latency, and cost",
+          "Models hot-swappable per task in production through a switch",
+          "Wired into CI: relevant PRs trigger targeted eval runs and post results back"
+        ],
+        tags: ["Android", "Google Play", "AI Evals", "GitHub Actions", "CI", "Production Software"],
+        place: "PointOne",
+        period: "2026 – Present",
+        current: true
+      },
+      {
+        title: "Starshield production software",
+        summary:
+          "Worked on Starshield production software at SpaceX: led team coordination for production features and built scheduling/tasking workflows, authentication logic, and metrics/alerting.",
+        highlights: [
+          "Owned task breakdown and delivery tracking for Starshield production features",
+          "Scheduling and tasking workflows for satellite operations",
+          "Expanded authentication logic for a production platform",
+          "Angular metrics and alerting for faster issue detection"
+        ],
+        tags: ["Angular", ".NET", "C#", "Production Software"],
+        place: "SpaceX",
+        period: "2025"
+      },
+      {
+        title: "Industrial AI vision tooling",
+        summary:
+          "Built Python-based computer vision tooling for industrial OCR, Data Matrix/barcode decoding, defect detection, and manufacturing automation during internships at Procter & Gamble.",
+        highlights: [
+          "OCR and Data Matrix/barcode pipelines for industrial label-reading workflows",
+          "3D camera evaluation for defect detection under varied conditions",
+          "Semantic-segmentation model improved to 95%",
+          "Automated test-stand data collection and analysis with Grafana"
+        ],
+        tags: ["Python", "Computer Vision", "Industrial Automation", "Grafana"],
+        place: "Procter & Gamble",
+        period: "2024 – 2025"
+      }
+    ]
   },
   {
-    eyebrow: "PRODUCTION",
-    title: "Production Software at SpaceX",
-    description:
-      "Worked on Starshield production software: led team coordination for production features and built scheduling/tasking workflows, authentication logic, and metrics/alerting.",
-    highlights: [
-      "Owned task breakdown and delivery tracking for Starshield production features",
-      "Scheduling and tasking workflows for satellite operations",
-      "Expanded authentication logic for a production platform",
-      "Angular metrics and alerting for faster issue detection"
-    ],
-    tags: ["Angular", ".NET", "C#", "Production Software"],
-    accent: "green",
-    Icon: Code2
-  },
-  {
-    eyebrow: "CPU-CORE",
-    title: "Out-of-Order RISC-V Processor",
-    description:
-      "Designed an N-way superscalar R10K-style RISC-V processor in SystemVerilog with register renaming, a reorder buffer, and speculative execution.",
-    highlights: [
-      "R10K-style microarchitecture",
-      "Load-Store Queue, Gshare branch prediction, instruction prefetching, and Early Tag Broadcast",
-      "Verified with Synopsys VCS and Verdi testbenches",
-      "Achieved a 7.8 ns critical path"
-    ],
-    tags: ["SystemVerilog", "Computer Architecture", "VCS", "Verdi", "RISC-V"],
-    accent: "amber",
-    Icon: Cpu
-  },
-  {
-    eyebrow: "PACKET-RTL",
-    title: "Low-Latency FPGA Market Data Pipeline",
-    description:
-      "Architected and verified a 7-stage, 250 MHz FPGA-targeted HFT pipeline processing NYSE XDP order-based market data over 10G Ethernet.",
-    highlights: [
-      "250 MHz FPGA-targeted pipeline",
-      "Order-book maintenance with cuckoo hashing and 3-level top-of-book tracking",
-      "Index-arbitrage signal generation on a 64-bit AXI-Stream datapath",
-      "Validated with cocotb and a Python reference model"
-    ],
-    tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low Latency"],
-    accent: "cyan",
-    Icon: Workflow
-  },
-  {
-    eyebrow: "VISION",
-    title: "Industrial AI Vision Tooling",
-    description:
-      "Built Python-based computer vision tooling for industrial OCR, Data Matrix/barcode decoding, defect detection, and manufacturing automation during internships at Procter & Gamble.",
-    highlights: [
-      "OCR and Data Matrix/barcode pipelines for industrial label-reading workflows",
-      "3D camera evaluation for defect detection under varied conditions",
-      "Semantic-segmentation model improved to 95%",
-      "Automated test-stand data collection and analysis with Grafana"
-    ],
-    tags: ["Python", "Computer Vision", "Industrial Automation", "Grafana"],
-    accent: "green",
-    Icon: Activity
+    label: "Hardware",
+    projects: [
+      {
+        title: "Out-of-order RISC-V processor",
+        summary:
+          "Designed an N-way superscalar R10K-style RISC-V processor in SystemVerilog with register renaming, a reorder buffer, and speculative execution.",
+        highlights: [
+          "R10K-style microarchitecture",
+          "Load-Store Queue, Gshare branch prediction, instruction prefetching, and Early Tag Broadcast",
+          "Verified with Synopsys VCS and Verdi testbenches",
+          "Achieved a 7.8 ns critical path"
+        ],
+        tags: ["SystemVerilog", "Computer Architecture", "VCS", "Verdi", "RISC-V"],
+        place: "CPU core"
+      },
+      {
+        title: "Low-latency FPGA market data pipeline",
+        summary:
+          "Architected and verified a 7-stage, 250 MHz FPGA-targeted HFT pipeline processing NYSE XDP order-based market data over 10G Ethernet.",
+        highlights: [
+          "250 MHz FPGA-targeted pipeline",
+          "Order-book maintenance with cuckoo hashing and 3-level top-of-book tracking",
+          "Index-arbitrage signal generation on a 64-bit AXI-Stream datapath",
+          "Validated with cocotb and a Python reference model"
+        ],
+        tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low Latency"],
+        place: "Packet RTL"
+      }
+    ]
   }
 ];
 
-const experience = [
+const experience: {
+  company: string;
+  roles: { title: string; dates: string; current?: boolean }[];
+  detail?: string;
+}[] = [
   {
     company: "PointOne",
-    role: "Software Engineer",
+    roles: [{ title: "Software Engineer", dates: "Aug 2026 – Present", current: true }],
     detail:
       "Set up the Android app and got it live on Google Play, and built AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
   },
   {
     company: "SpaceX",
-    role: "Software Engineering Intern",
+    roles: [{ title: "Software Engineering Intern", dates: "Aug – Dec 2025" }],
     detail:
       "Led coordination for Starshield production features and built scheduling/tasking workflows, authentication logic, and metrics/alerting."
   },
   {
     company: "Procter & Gamble",
-    role: "Engineering Intern",
-    detail:
-      "Worked on AI vision, OCR, Data Matrix decoding, and manufacturing automation."
+    roles: [
+      { title: "Computer Vision Intern", dates: "May – Aug 2025" },
+      { title: "Intelligent Controls & Automation Intern", dates: "May – Aug 2024" }
+    ],
+    detail: "Worked on AI vision, OCR, Data Matrix decoding, and manufacturing automation."
   },
   {
     company: "Michigan Solar Car",
-    role: "Firmware/Microsystems",
-    detail:
-      "Worked with RTOS, STM32, HAL, and embedded communication protocols."
+    roles: [{ title: "Firmware/Microsystems", dates: "Aug 2023 – May 2024" }],
+    detail: "Worked with RTOS, STM32, HAL, and embedded communication protocols."
+  },
+  {
+    company: "University of Michigan",
+    roles: [{ title: "B.S.E. Computer Engineering", dates: "Aug 2022 – May 2026" }]
   }
 ];
 
 const skillGroups = [
   {
     title: "Software",
-    icon: Terminal,
     skills: ["Python", "Go", "C++", "C", "C#", "TypeScript", ".NET", "Angular", "Android"]
   },
   {
     title: "Infrastructure / Tooling",
-    icon: Cloud,
     skills: [
       "Linux",
       "Git",
@@ -160,7 +174,6 @@ const skillGroups = [
   },
   {
     title: "AI / Evals",
-    icon: Activity,
     skills: [
       "Model evaluation",
       "Model benchmarking",
@@ -172,7 +185,6 @@ const skillGroups = [
   },
   {
     title: "Hardware / Embedded",
-    icon: Cpu,
     skills: [
       "SystemVerilog",
       "RTL Design",
@@ -187,76 +199,31 @@ const skillGroups = [
   }
 ];
 
-
-const buildLog = [
-  { marker: "✓", label: "out-of-order RISC-V processor", tone: "complete" },
-  { marker: "✓", label: "low-latency FPGA market data pipeline", tone: "complete" },
-  { marker: "✓", label: "industrial AI vision tooling @ P&G", tone: "complete" },
-  { marker: "✓", label: "production software @ SpaceX", tone: "complete" },
-  { marker: "→", label: "software engineer @ PointOne", tone: "active" }
-];
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
-function SectionHeading({
-  eyebrow,
-  title,
-  copy
-}: {
-  eyebrow: string;
-  title: string;
-  copy: string;
-}) {
-  return (
-    <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      transition={{ duration: 0.35 }}
-      className="mb-10 max-w-3xl"
-    >
-      <p className="font-mono text-xs uppercase tracking-[0.28em] text-signal-cyan">
-        {eyebrow}
-      </p>
-      <h2 className="mt-3 text-3xl font-semibold tracking-normal text-white md:text-4xl">
-        {title}
-      </h2>
-      <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">{copy}</p>
-    </motion.div>
-  );
+function opensNewTab(href: string) {
+  return href.startsWith("http") || href.endsWith(".pdf");
 }
 
-function IconButton({
+function TextLink({
   href,
   children,
-  Icon,
-  variant = "secondary"
+  className
 }: {
   href: string;
   children: ReactNode;
-  Icon: LucideIcon;
-  variant?: "primary" | "secondary";
+  className?: string;
 }) {
-  const opensNewTab = href.startsWith("http") || href.endsWith(".pdf");
+  const external = opensNewTab(href);
 
   return (
     <a
       href={href}
-      target={opensNewTab ? "_blank" : undefined}
-      rel={opensNewTab ? "noopener noreferrer" : undefined}
-      className={cn(
-        "button-focus inline-flex h-11 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold transition duration-200",
-        variant === "primary"
-          ? "border-signal-cyan/60 bg-signal-cyan text-chassis-950 hover:bg-white"
-          : "border-slate-700/80 bg-white/[0.03] text-slate-100 hover:border-signal-cyan/60 hover:bg-signal-cyan/10"
-      )}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className={cn("text-link", className)}
     >
-      <Icon className="h-4 w-4" aria-hidden="true" />
-      {children}
+      <span className="text-link-label">{children}</span>
+      <ArrowUpRight className="text-link-icon" aria-hidden="true" strokeWidth={1.75} />
+      {external ? <span className="sr-only"> (opens in a new tab)</span> : null}
     </a>
   );
 }
@@ -279,384 +246,354 @@ function BackForwardCacheGuard() {
   return null;
 }
 
-function BuildLogPanel() {
-  return (
-    <div className="panel-in module-card rounded-md p-5 font-mono shadow-module">
-      <div className="mb-4 flex items-center justify-between border-b border-slate-800 pb-3">
-        <div className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-signal-green shadow-[0_0_14px_rgba(121,242,166,0.8)]" />
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-slate-300">
-            build log
-          </p>
-        </div>
-        <Terminal className="h-4 w-4 text-signal-cyan" aria-hidden="true" />
-      </div>
-
-      <div className="rounded border border-slate-800 bg-[#050810] p-4">
-        <p className="text-xs uppercase tracking-[0.24em] text-signal-cyan">
-          BUILD LOG
-        </p>
-
-        <div className="mt-5 space-y-3">
-          {buildLog.map((item) => (
-            <div key={item.label} className="flex gap-3 text-sm">
-              <span
-                className={cn(
-                  "shrink-0",
-                  item.tone === "active" ? "text-signal-amber" : "text-signal-green"
-                )}
-              >
-                [{item.marker}]
-              </span>
-              <span className="text-slate-100">{item.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function WaveDivider() {
-  const ref = useRef<SVGSVGElement>(null);
-
-  // The dash animation can't run on the compositor, so only run it while the
-  // divider line itself is on screen.
+/**
+ * One IntersectionObserver for every [data-reveal] block. Only blocks that are
+ * below the fold when the page hydrates get hidden, so nothing that is already
+ * on screen ever blinks, and without JS everything is simply visible. Each
+ * block is unobserved after it fades in, and the observer disconnects once all
+ * are done, so the page goes fully idle.
+ */
+function useReveal() {
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    if (typeof IntersectionObserver === "undefined") {
-      el.dataset.visible = "true";
-      return;
-    }
+    const fold = window.innerHeight;
+    const pending = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-reveal]")
+    ).filter((el) => el.getBoundingClientRect().top > fold);
 
+    if (pending.length === 0) return;
+
+    pending.forEach((el) => el.classList.add("is-pending"));
+
+    let remaining = pending.length;
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[entries.length - 1];
-        el.dataset.visible = entry.isIntersecting ? "true" : "false";
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.remove("is-pending");
+          observer.unobserve(entry.target);
+          remaining -= 1;
+        }
+        if (remaining === 0) observer.disconnect();
       },
-      { rootMargin: "0px 0px -8px 0px" }
+      { rootMargin: "0px 0px -6% 0px" }
     );
-    observer.observe(el);
+
+    pending.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
   }, []);
-
-  return (
-    <div className="section-shell py-8" aria-hidden="true">
-      <svg ref={ref} viewBox="0 0 1120 72" className="wave-divider h-14 w-full text-slate-700">
-        <path
-          d="M0 38 H110 V18 H190 V38 H290 V56 H390 V38 H510 V18 H590 V38 H740 V56 H840 V38 H950 V18 H1030 V38 H1120"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1"
-          className="wave-path"
-        />
-        <path
-          d="M0 39 H1120"
-          fill="none"
-          stroke="rgba(81,214,255,0.18)"
-          strokeWidth="1"
-        />
-      </svg>
-    </div>
-  );
 }
 
-function ProjectCard({
-  project,
-  index
-}: {
-  project: (typeof projects)[number];
-  index: number;
-}) {
-  const accentClass =
-    project.accent === "green"
-      ? "text-signal-green border-signal-green/40 bg-signal-green/10"
-      : project.accent === "amber"
-        ? "text-signal-amber border-signal-amber/40 bg-signal-amber/10"
-        : "text-signal-cyan border-signal-cyan/40 bg-signal-cyan/10";
-  const Icon = project.Icon;
+/**
+ * Press "g" (or use the footer toggle) to overlay the 12-column grid the page
+ * is set on. Static, pointer-events: none, and off by default.
+ */
+function useGridToggle() {
+  const [on, setOn] = useState(false);
 
-  return (
-    <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.15) }}
-      className={index === 0 || index === 1 ? "lg:col-span-6" : "lg:col-span-4"}
-    >
-      <article className="module-card group h-full rounded-md p-5 shadow-module transition-transform duration-300 ease-in-out hover:-translate-y-1.5">
-        <div className="relative z-10">
-          <div className="mb-6 flex items-center justify-between gap-4">
-            <div className={cn("rounded border px-3 py-1 font-mono text-xs", accentClass)}>
-              {project.eyebrow}
-            </div>
-            <div className={cn("rounded border p-2", accentClass)}>
-              <Icon className="h-4 w-4" aria-hidden="true" />
-            </div>
-          </div>
+  useEffect(() => {
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key !== "g" && event.key !== "G") return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) {
+        return;
+      }
+      setOn((value) => !value);
+    };
 
-          <h3 className="text-xl font-semibold tracking-normal text-white">
-            {project.title}
-          </h3>
-          <p className="mt-3 text-sm leading-6 text-slate-300">{project.description}</p>
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
 
-          <div className="mt-6 space-y-3">
-            {project.highlights.map((highlight) => (
-              <div key={highlight} className="flex gap-3 text-sm text-slate-300">
-                <span
-                  className={cn(
-                    "mt-2 h-1.5 w-1.5 shrink-0 rounded-full",
-                    project.accent === "green"
-                      ? "bg-signal-green"
-                      : project.accent === "amber"
-                        ? "bg-signal-amber"
-                        : "bg-signal-cyan"
-                  )}
-                />
-                <span>{highlight}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded border border-slate-700/80 bg-black/20 px-2.5 py-1 font-mono text-[11px] text-slate-300"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-      </article>
-    </motion.div>
-  );
+  return [on, setOn] as const;
 }
 
-function ExperienceTimeline() {
+function GridOverlay() {
   return (
-    <div className="relative">
-      <div className="absolute bottom-0 left-3 top-1 w-px bg-gradient-to-b from-signal-cyan via-slate-700 to-transparent md:left-1/2" />
-      <div className="space-y-8">
-        {experience.map((item, index) => (
-          <motion.div
-            key={item.company}
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.15) }}
-            className="relative grid gap-4 pl-10 md:grid-cols-2 md:gap-10 md:pl-0"
-          >
-            <span className="absolute left-0 top-2 h-6 w-6 rounded-full border border-signal-cyan/60 bg-chassis-950 shadow-[0_0_18px_rgba(81,214,255,0.28)] md:left-[calc(50%-12px)]" />
-            <div
-              className={cn(
-                "rounded-md border border-slate-800 bg-white/[0.025] p-5",
-                index % 2 === 0 ? "md:text-right" : "md:col-start-2 md:text-left"
-              )}
-            >
-              <p className="font-mono text-xs uppercase tracking-[0.22em] text-signal-cyan">
-                {item.company}
-              </p>
-              <h3 className="mt-2 text-lg font-semibold text-white">{item.role}</h3>
-              <p className="mt-3 text-sm leading-6 text-slate-300">{item.detail}</p>
-            </div>
-          </motion.div>
+    <div className="grid-overlay" aria-hidden="true">
+      <div className="shell layout-grid h-full">
+        {Array.from({ length: 12 }, (_, index) => (
+          <span key={index} />
         ))}
       </div>
     </div>
   );
 }
 
-function SkillGroup({
-  group,
-  index
+function SectionHead({
+  num,
+  id,
+  title,
+  children
 }: {
-  group: (typeof skillGroups)[number];
-  index: number;
+  num: string;
+  id: string;
+  title: string;
+  children: ReactNode;
 }) {
-  const Icon = group.icon;
-
   return (
-    <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.15) }}
-      className="rounded-md border border-slate-800 bg-chassis-900/70 p-5"
-    >
-      <div className="mb-5 flex items-center gap-3">
-        <span className="rounded border border-signal-cyan/35 bg-signal-cyan/10 p-2 text-signal-cyan">
-          <Icon className="h-4 w-4" aria-hidden="true" />
-        </span>
-        <h3 className="text-lg font-semibold text-white">{group.title}</h3>
+    <header className="section-head layout-grid" data-reveal>
+      <p className="section-num col-span-4 sm:col-span-2" aria-hidden="true">
+        {num}
+      </p>
+      <h2 id={id} className="section-title col-span-4 sm:col-span-6 lg:col-span-4">
+        {title}
+      </h2>
+      <div className="section-lede col-span-4 sm:col-span-6 sm:col-start-3 lg:col-span-6 lg:col-start-7 lg:row-start-1">
+        {children}
       </div>
-      <div className="flex flex-wrap gap-2">
-        {group.skills.map((skill) => (
-          <span
-            key={skill}
-            className="rounded border border-slate-700/80 bg-black/20 px-2.5 py-1.5 font-mono text-xs text-slate-300"
-          >
-            {skill}
+    </header>
+  );
+}
+
+function ProjectRow({ project, index }: { project: Project; index: number }) {
+  return (
+    <li className="project-row layout-grid" data-reveal>
+      <div className="project-rail col-span-4 sm:col-span-2">
+        <span className="project-num">{String(index).padStart(2, "0")}</span>
+        <span className="project-place">{project.place}</span>
+        {project.period ? (
+          <span className="project-period">
+            {project.current ? <span className="live-dot" aria-hidden="true" /> : null}
+            {project.period}
           </span>
-        ))}
+        ) : null}
       </div>
-    </motion.div>
+
+      <div className="col-span-4 sm:col-span-6 lg:col-span-4">
+        <h4 className="project-title">{project.title}</h4>
+        <p className="project-summary">{project.summary}</p>
+        <p className="project-tags">
+          <span className="sr-only">Tags: </span>
+          {project.tags.join(" / ")}
+        </p>
+      </div>
+
+      <ul className="project-highlights col-span-4 sm:col-span-6 sm:col-start-3 lg:col-span-6 lg:col-start-7 lg:row-start-1">
+        {project.highlights.map((highlight) => (
+          <li key={highlight}>{highlight}</li>
+        ))}
+      </ul>
+    </li>
+  );
+}
+
+function WorkIndex() {
+  let count = 0;
+
+  return (
+    <div className="work-index">
+      {projectGroups.map((group) => (
+        <div key={group.label} className="work-group">
+          <div className="group-label layout-grid">
+            <h3 className="col-span-4 sm:col-span-2">{group.label}</h3>
+            <span className="group-col hidden lg:col-span-4 lg:block" aria-hidden="true">
+              Project
+            </span>
+            <span className="group-col hidden lg:col-span-6 lg:block" aria-hidden="true">
+              Highlights
+            </span>
+          </div>
+          <ol className="project-list">
+            {group.projects.map((project) => {
+              count += 1;
+              return <ProjectRow key={project.title} project={project} index={count} />;
+            })}
+          </ol>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ExperienceList() {
+  return (
+    <ol className="xp-list">
+      {experience.map((item) => (
+        <li key={item.company} className="xp-entry layout-grid" data-reveal>
+          {item.roles.map((role) => (
+            <Fragment key={role.title}>
+              <p className="xp-dates col-span-4 sm:col-span-2 sm:col-start-1">
+                {role.current ? <span className="live-dot" aria-hidden="true" /> : null}
+                {role.dates}
+              </p>
+              <h3 className="xp-title col-span-4 sm:col-span-6 lg:col-span-4">
+                {role.title}
+                <span className="sr-only">, </span>
+                <span className="xp-company">{item.company}</span>
+              </h3>
+            </Fragment>
+          ))}
+          {item.detail ? (
+            <p
+              className="xp-detail col-span-4 sm:col-span-6 sm:col-start-3 lg:col-span-5 lg:col-start-7"
+              style={{ "--rows": item.roles.length } as CSSProperties}
+            >
+              {item.detail}
+            </p>
+          ) : null}
+        </li>
+      ))}
+    </ol>
   );
 }
 
 export default function Home() {
-  return (
-    <main className="relative min-h-screen overflow-hidden">
-      <BackForwardCacheGuard />
-      <div className="technical-grid" aria-hidden="true" />
-      <div className="scan-sweep" aria-hidden="true" />
-      <div className="noise-vignette" aria-hidden="true" />
+  const [grid, setGrid] = useGridToggle();
+  useReveal();
 
-      <header className="section-shell sticky top-4 z-40">
-        <nav className="flex items-center justify-between rounded-md border border-slate-800/90 bg-chassis-950/75 px-4 py-3 shadow-glow backdrop-blur-xl">
-          <a href="#" aria-label="Jayce Clarke, back to top" className="button-focus flex items-center gap-2 rounded-sm">
-            <span className="flex h-8 w-8 items-center justify-center rounded border border-signal-cyan/40 bg-signal-cyan/10 font-mono text-xs text-signal-cyan">
-              JC
-            </span>
-          </a>
-          <div className="hidden items-center gap-5 font-mono text-xs text-slate-400 md:flex">
-            <a className="button-focus rounded-sm hover:text-white" href="#systems">
-              Systems
-            </a>
-            <a className="button-focus rounded-sm hover:text-white" href="#timeline">
-              Timeline
-            </a>
-            <a className="button-focus rounded-sm hover:text-white" href="#stack">
-              Stack
-            </a>
-            <a className="button-focus rounded-sm hover:text-white" href="#contact">
-              Contact
-            </a>
-          </div>
+  return (
+    <>
+      <BackForwardCacheGuard />
+      {grid ? <GridOverlay /> : null}
+
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+
+      <header className="site-header shell">
+        <a href="#top" className="wordmark" aria-label="Jayce Clarke, back to top">
+          <span className="hidden sm:inline">Jayce Clarke</span>
+          <span className="sm:hidden" aria-hidden="true">
+            JC
+          </span>
+        </a>
+        <nav aria-label="Sections">
+          <ol className="site-nav">
+            {sections.map((section) => (
+              <li key={section.id}>
+                <a href={`#${section.id}`}>
+                  <span className="site-nav-num" aria-hidden="true">
+                    {section.num}
+                  </span>
+                  {section.label}
+                </a>
+              </li>
+            ))}
+          </ol>
         </nav>
       </header>
 
-      <section className="section-shell grid min-h-[calc(100vh-88px)] items-center gap-10 py-16 md:grid-cols-[1.02fr_0.98fr] md:py-20">
-        <div className="hero-in">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-signal-green">
-            B.S.E. Computer Engineering, Michigan &apos;26
-          </p>
-          <h1 className="mt-4 text-5xl font-semibold tracking-normal text-white sm:text-6xl lg:text-7xl">
-            Jayce Clarke
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg font-medium text-slate-200 sm:text-xl">
-            Software Engineer @ PointOne{" \u00b7 "}
-            <span className="whitespace-nowrap">Ex-SpaceX</span>
-          </p>
+      <main id="main">
+        <section id="top" className="hero shell" aria-labelledby="hero-name">
+          <p className="hero-meta enter">B.S.E. Computer Engineering, Michigan &apos;26</p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <IconButton href="#systems" Icon={ArrowRight} variant="primary">
-              View What I've Built
-            </IconButton>
-            <IconButton href={LINKS.github} Icon={Github}>
-              GitHub
-            </IconButton>
-            <IconButton href={LINKS.resume} Icon={FileText}>
-              Resume
-            </IconButton>
+          <div className="hero-body">
+            <h1 id="hero-name" className="hero-name enter" style={{ animationDelay: "60ms" }}>
+              <span>Jayce</span> <span>Clarke</span>
+            </h1>
+
+            <div className="hero-foot layout-grid enter" style={{ animationDelay: "160ms" }}>
+              <p className="hero-title col-span-4 sm:col-span-8 lg:col-span-6">
+                Software Engineer @ PointOne
+                <span className="hero-sep"> · </span>
+                <span className="hero-ex whitespace-nowrap">Ex-SpaceX</span>
+              </p>
+              <div className="hero-actions col-span-4 sm:col-span-8 lg:col-span-6">
+                <a href="#work" className="btn">
+                  Selected work
+                  <ArrowDown className="h-4 w-4" aria-hidden="true" strokeWidth={1.75} />
+                </a>
+                <TextLink href={LINKS.github}>GitHub</TextLink>
+                <TextLink href={LINKS.resume}>Resume</TextLink>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <div>
-          <BuildLogPanel />
-        </div>
-      </section>
+        <section id="work" className="section shell" aria-labelledby="work-title">
+          <SectionHead num="01" id="work-title" title="Work">
+            <p>Production software, and the systems underneath.</p>
+          </SectionHead>
+          <WorkIndex />
+        </section>
 
-      <WaveDivider />
+        <section id="experience" className="section shell" aria-labelledby="experience-title">
+          <SectionHead num="02" id="experience-title" title="Experience">
+            <p>From firmware to production software.</p>
+          </SectionHead>
+          <ExperienceList />
+        </section>
 
-      <section id="systems" className="section-shell py-16 md:py-20">
-        <SectionHeading
-          eyebrow="Featured work"
-          title="Production software and the systems underneath."
-          copy="Production work at PointOne and SpaceX up front, backed by a systems foundation in CPU microarchitecture, FPGA datapaths, and industrial vision."
-        />
-
-        <div className="grid gap-5 lg:grid-cols-12">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.title} project={project} index={index} />
-          ))}
-        </div>
-      </section>
-
-      <WaveDivider />
-
-      <section id="timeline" className="section-shell py-16 md:py-20">
-        <SectionHeading
-          eyebrow="Experience timeline"
-          title="From firmware to production software."
-          copy="Embedded firmware and manufacturing automation first, then production platforms at SpaceX, and now full-time software engineering at PointOne."
-        />
-        <ExperienceTimeline />
-      </section>
-
-      <section id="stack" className="section-shell py-16 md:py-20">
-        <SectionHeading
-          eyebrow="Technical stack"
-          title="Tools grouped by the layer they touch."
-          copy="Day to day in production software, infrastructure, and AI tooling, with a hardware and embedded background that goes down to RTL."
-        />
-        <div className="grid gap-5 md:grid-cols-2">
-          {skillGroups.map((group, index) => (
-            <SkillGroup key={group.title} group={group} index={index} />
-          ))}
-        </div>
-      </section>
-
-      <section id="contact" className="section-shell py-16 md:py-24">
-        <div className="grid gap-8 rounded-md border border-slate-800 bg-chassis-900/70 p-6 shadow-module md:grid-cols-[0.95fr_1.05fr] md:p-8">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-signal-cyan">
-              Contact
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold text-white">
-              Let's build something that ships.
-            </h2>
-            <p className="mt-4 text-base leading-7 text-slate-300">
-              Open to conversations about production software, AI evaluation
-              and infrastructure, developer tooling, and systems engineering.
-            </p>
+        <section id="stack" className="section shell" aria-labelledby="stack-title">
+          <SectionHead num="03" id="stack-title" title="Stack">
+            <p>Tools, grouped by the layer they touch.</p>
+          </SectionHead>
+          <div className="stack-grid layout-grid">
+            {skillGroups.map((group) => (
+              <div
+                key={group.title}
+                className="stack-col col-span-2 sm:col-span-4 lg:col-span-3"
+                data-reveal
+              >
+                <h3 className="stack-title">{group.title}</h3>
+                <ul className="stack-list">
+                  {group.skills.map((skill) => (
+                    <li key={skill}>{skill}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <IconButton href={LINKS.email} Icon={Mail} variant="primary">
+        </section>
+
+        <section id="contact" className="section shell" aria-labelledby="contact-title">
+          <SectionHead num="04" id="contact-title" title="Contact">
+            <p>Let&apos;s build something that ships.</p>
+            <p className="section-note">
+              Open to conversations about production software, AI evaluation and
+              infrastructure, developer tooling, and systems engineering.
+            </p>
+          </SectionHead>
+
+          <div className="contact-body layout-grid" data-reveal>
+            <p className="contact-label col-span-4 sm:col-span-2">Email</p>
+            <a
+              href={LINKS.email}
+              className="contact-email col-span-4 sm:col-span-6 lg:col-span-10"
+            >
               {EMAIL}
-            </IconButton>
-            <IconButton href={LINKS.linkedin} Icon={Linkedin}>
-              LinkedIn
-            </IconButton>
-            <IconButton href={LINKS.github} Icon={Github}>
-              GitHub
-            </IconButton>
-            <IconButton href={LINKS.resume} Icon={FileText}>
-              Resume
-            </IconButton>
+            </a>
           </div>
-        </div>
-      </section>
 
-      <footer className="section-shell border-t border-slate-800 py-8">
-        <div className="flex flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>Jayce Clarke{" \u00b7 "}Software Engineer</p>
-          <a
-            href={LINKS.email}
-            className="button-focus inline-flex items-center gap-2 rounded-sm text-slate-400 hover:text-white"
-          >
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            {EMAIL}
-          </a>
-        </div>
+          <ul className="contact-links layout-grid" data-reveal>
+            <li className="col-span-4 sm:col-span-2 sm:col-start-3 lg:col-span-3 lg:col-start-3">
+              <TextLink href={LINKS.linkedin}>LinkedIn</TextLink>
+              <span className="contact-handle">in/jayce-clarke</span>
+            </li>
+            <li className="col-span-4 sm:col-span-2 lg:col-span-3">
+              <TextLink href={LINKS.github}>GitHub</TextLink>
+              <span className="contact-handle">@jayceclarke</span>
+            </li>
+            <li className="col-span-4 sm:col-span-2 lg:col-span-4">
+              <TextLink href={LINKS.resume}>Resume</TextLink>
+              <span className="contact-handle">PDF</span>
+            </li>
+          </ul>
+        </section>
+      </main>
+
+      <footer className="site-footer shell">
+        <p>Jayce Clarke{" · "}Software Engineer</p>
+        <p className="colophon">Set in Instrument Sans &amp; IBM Plex Mono</p>
+        <button
+          type="button"
+          className="footer-link footer-grid-toggle"
+          aria-pressed={grid}
+          onClick={() => setGrid((value) => !value)}
+        >
+          {grid ? "Hide grid" : "Show grid"}
+          <kbd>G</kbd>
+        </button>
+        <a href="#top" className="footer-link">
+          Back to top
+          <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" strokeWidth={1.75} />
+        </a>
       </footer>
-    </main>
+    </>
   );
 }
