@@ -7,7 +7,6 @@ import "./globals.css";
 // and the fallback fonts are metric-adjusted so swapping in causes no shift.
 const sans = Instrument_Sans({
   subsets: ["latin"],
-  axes: ["wdth"],
   display: "swap",
   variable: "--font-sans"
 });

@@ -29,11 +29,6 @@ type Project = {
   place?: string;
   /** Only shown where the timing is known. */
   period?: string;
-  /**
-   * Muted rail label for builds with no employer, made only from the
-   * project's own tags, so the rail never reads like a company name.
-   */
-  discipline?: string;
   current?: boolean;
 };
 
@@ -61,7 +56,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
       {
         title: "Starshield scheduling & tasking",
         summary:
-          "Built scheduling and tasking workflows, authentication logic, and metrics/alerting for Starshield at SpaceX, and led team coordination for its production features.",
+          "Built scheduling and tasking workflows, expanded authentication logic, and added metrics/alerting for Starshield at SpaceX, and led team coordination for its production features.",
         highlights: [
           "Owned task breakdown and delivery tracking for Starshield production features",
           "Scheduling and tasking workflows for satellite operations",
@@ -84,7 +79,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
         ],
         tags: ["Python", "Computer Vision", "Industrial Automation", "Grafana"],
         place: "Procter & Gamble",
-        period: "2024 – 2025"
+        period: "2024, 2025"
       }
     ]
   },
@@ -101,8 +96,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Verified with Synopsys VCS and Verdi testbenches",
           "Achieved a 7.8 ns critical path"
         ],
-        tags: ["SystemVerilog", "Computer Architecture", "VCS", "Verdi", "RISC-V"],
-        discipline: "SystemVerilog"
+        tags: ["SystemVerilog", "Computer Architecture", "VCS", "Verdi", "RISC-V"]
       },
       {
         title: "Low-latency FPGA market data pipeline",
@@ -114,8 +108,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Index-arbitrage signal generation on a 64-bit AXI-Stream datapath",
           "Validated with cocotb and a Python reference model"
         ],
-        tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low Latency"],
-        discipline: "FPGA · RTL"
+        tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low Latency"]
       }
     ]
   }
@@ -130,13 +123,13 @@ const experience: {
     company: "PointOne",
     roles: [{ title: "Software Engineer", dates: "Aug 2026 – Present", current: true }],
     detail:
-      "Building AI evaluation infrastructure: production-replay evals on every PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
+      "Building AI evaluation infrastructure: production-replay evals on any PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
   },
   {
     company: "SpaceX",
     roles: [{ title: "Software Engineering Intern", dates: "Aug – Dec 2025" }],
     detail:
-      "Led coordination for Starshield production features and built scheduling/tasking workflows, authentication logic, and metrics/alerting."
+      "Led coordination for Starshield production features, built scheduling/tasking workflows, expanded authentication logic, and added metrics/alerting."
   },
   {
     company: "Procter & Gamble",
@@ -148,7 +141,7 @@ const experience: {
   },
   {
     company: "Michigan Solar Car",
-    roles: [{ title: "Firmware/Microsystems", dates: "Aug 2023 – May 2024" }],
+    roles: [{ title: "Embedded Software Engineer", dates: "Aug 2023 – May 2024" }],
     detail: "Worked with RTOS, STM32, HAL, and embedded communication protocols."
   },
   {
@@ -190,10 +183,10 @@ const skillGroups = [
     title: "Hardware / Embedded",
     skills: [
       "SystemVerilog",
-      "RTL Design",
+      "RTL design",
       "FPGA",
-      "Computer Architecture",
-      "Design Verification",
+      "Computer architecture",
+      "Design verification",
       "VCS",
       "Verdi",
       "STM32",
@@ -201,6 +194,28 @@ const skillGroups = [
     ]
   }
 ];
+
+/**
+ * Hyphenated names, and numbers with their units, that must never split
+ * across lines ("RISC- / V", "250 / MHz"). Each match is wrapped in a nowrap
+ * span, like Ex-SpaceX in the hero, rather than using U+2011, which the web
+ * fonts may not have.
+ */
+const UNBREAKABLE = /(RISC-V|R10K-style|AXI-Stream|64-bit|250 MHz|7\.8 ns)/;
+
+function keepTogether(text: string): ReactNode {
+  const parts = text.split(UNBREAKABLE);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <span key={i} className="whitespace-nowrap">
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+}
 
 function opensNewTab(href: string) {
   return href.startsWith("http") || href.endsWith(".pdf");
@@ -355,14 +370,11 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
             {project.period}
           </span>
         ) : null}
-        {project.discipline ? (
-          <span className="project-discipline">{project.discipline}</span>
-        ) : null}
       </div>
 
       <div className="col-span-4 sm:col-span-6 lg:col-span-4">
-        <h4 className="project-title">{project.title}</h4>
-        <p className="project-summary">{project.summary}</p>
+        <h4 className="project-title">{keepTogether(project.title)}</h4>
+        <p className="project-summary">{keepTogether(project.summary)}</p>
         {/* Each tag is unbreakable and the slash is glued to the tag before it,
             so lines only ever break between tags. */}
         <p className="project-tags">
@@ -378,7 +390,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
 
       <ul className="project-highlights col-span-4 sm:col-span-6 sm:col-start-3 lg:col-span-6 lg:col-start-7 lg:row-start-1">
         {project.highlights.map((highlight) => (
-          <li key={highlight}>{highlight}</li>
+          <li key={highlight}>{keepTogether(highlight)}</li>
         ))}
       </ul>
     </li>
@@ -458,7 +470,7 @@ export default function Home() {
         Skip to content
       </a>
 
-      <header className="site-header shell">
+      <header id="top" className="site-header shell">
         <a href="#top" className="wordmark" aria-label="Jayce Clarke, back to top">
           <span className="hidden sm:inline">Jayce Clarke</span>
           <span className="sm:hidden" aria-hidden="true">
@@ -482,24 +494,29 @@ export default function Home() {
       </header>
 
       <main id="main">
-        <section id="top" className="hero shell" aria-labelledby="hero-name">
-          <p className="hero-meta enter">B.S.E. Computer Engineering, Michigan &apos;26</p>
+        <section className="hero shell" aria-labelledby="hero-name">
+          <p className="hero-meta enter">B.S.E. Computer Engineering, Michigan ’26</p>
 
           <div className="hero-body">
             {/* The space sits inside the first span: each word has its own
                 width-matched fallback font (globals.css), so "Clarke" starts
-                at the same x before and after Instrument Sans loads. */}
-            <h1 id="hero-name" className="hero-name enter">
+                at the same x before and after Instrument Sans loads. The name
+                has no entrance: it paints at full opacity with the first frame. */}
+            <h1 id="hero-name" className="hero-name">
               <span>Jayce </span>
               <span>Clarke</span>
             </h1>
 
             <div className="hero-foot layout-grid enter">
               {/* "· Ex-SpaceX" is one unbreakable unit, so a line can only break
-                  before the dot, never after it or inside Ex-SpaceX. */}
+                  before the dot, never after it or inside Ex-SpaceX. Phones
+                  always put Ex-SpaceX on its own line and keep the dot for
+                  screen readers only, so the line never starts with a bullet. */}
               <p className="hero-title col-span-4 sm:col-span-8 lg:col-span-6">
                 Software Engineer @&nbsp;PointOne{" "}
-                <span className="whitespace-nowrap">· Ex-SpaceX</span>
+                <span className="whitespace-nowrap max-sm:block">
+                  <span className="max-sm:sr-only">·{" "}</span>Ex-SpaceX
+                </span>
               </p>
               <div className="hero-actions col-span-4 sm:col-span-8 lg:col-span-6">
                 <a href="#work" className="btn">
@@ -517,7 +534,7 @@ export default function Home() {
           {/* Old links to #systems land exactly where #work does. */}
           <span id="systems" className="anchor-alias" />
           <SectionHead num="01" id="work-title" title="Work">
-            <p>Production software, and the systems underneath.</p>
+            <p>Production software and the systems underneath.</p>
           </SectionHead>
           <WorkIndex />
         </section>
@@ -533,7 +550,7 @@ export default function Home() {
 
         <section id="stack" className="section shell" aria-labelledby="stack-title">
           <SectionHead num="03" id="stack-title" title="Stack">
-            <p>Tools, grouped by the layer they touch.</p>
+            <p>Tools grouped by the layer they touch.</p>
           </SectionHead>
           <div className="stack-grid layout-grid">
             {skillGroups.map((group) => (
@@ -555,7 +572,7 @@ export default function Home() {
 
         <section id="contact" className="section shell" aria-labelledby="contact-title">
           <SectionHead num="04" id="contact-title" title="Contact">
-            <p>Let&apos;s build something that ships.</p>
+            <p>Let’s build something that ships.</p>
             <p className="section-note">
               Open to conversations about production software, AI evaluation and
               infrastructure, developer tooling, and systems engineering.
@@ -592,10 +609,11 @@ export default function Home() {
       <footer className="site-footer shell">
         <p>Jayce Clarke{" · "}Software Engineer</p>
         <p className="colophon">Set in Instrument Sans &amp; IBM Plex Mono</p>
+        {/* The visible label carries the state, so no aria-pressed: a toggle
+            button whose name also changes would announce "Hide grid, pressed". */}
         <button
           type="button"
           className="footer-link footer-grid-toggle"
-          aria-pressed={grid}
           onClick={() => setGrid((value) => !value)}
         >
           {grid ? "Hide grid" : "Show grid"}

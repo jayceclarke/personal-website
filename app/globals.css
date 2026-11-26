@@ -142,7 +142,6 @@ body {
 .site-nav-num,
 .project-num,
 .project-period,
-.project-discipline,
 .project-tags,
 .group-label,
 .xp-dates,
@@ -265,17 +264,23 @@ body {
   color: var(--ink-3);
 }
 
-/* Sized to the measure: "Jayce Clarke" is ~5.23em wide, so this fills the
-   column with a little slack for classic scrollbars, capped at the shell.
+/* Sized to the measure: "Jayce Clarke" is ~5.23em wide, so it runs rule to
+   rule. Container units measure the column itself (scrollbars excluded), so
+   no slack is needed; browsers without them keep the vw-based --name-size.
    It never wraps, and until Instrument Sans arrives each word is set in a
    fallback tuned to the same width and baseline (see the top of this file),
    so the late swap shifts nothing. */
+.hero-body {
+  container-type: inline-size;
+}
+
 .hero-name {
   margin: 0 0 0 -0.012em;
   padding-bottom: 0.13em;
   font-family: var(--font-sans-primary, "Instrument Sans"), "Hero Name Fallback",
     var(--font-sans), "Instrument Sans Text Fallback", ui-sans-serif, system-ui, sans-serif;
   font-size: var(--name-size);
+  font-size: calc(100cqi / 5.25);
   font-weight: 600;
   line-height: 0.86;
   letter-spacing: -0.05em;
@@ -386,14 +391,10 @@ body {
 
 /* CSS-only entrance so the hero is painted with the first frame of HTML,
    not after hydration. Short, finite, transform/opacity only, and settled
-   by ~550ms. The 240px name only fades: sliding type that big reads slow. */
+   by ~550ms. The name itself has no entrance: it is the largest element on
+   the page, so it paints at full opacity with the first frame. */
 .enter {
   animation: enter 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-}
-
-.hero-name.enter {
-  animation-name: enter-fade;
-  animation-delay: 40ms;
 }
 
 .hero-foot.enter {
@@ -412,22 +413,15 @@ body {
   }
 }
 
-@keyframes enter-fade {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 /* ------------------------------------------------------------------------
    Sections
    ------------------------------------------------------------------------ */
+/* Nav jumps land with the section's top rule 1.5rem (scroll-padding-top)
+   below the top of the screen, whatever padding sits above the rule. */
 .section {
   position: relative;
   padding-top: var(--section-space);
+  scroll-margin-top: calc(-1 * var(--section-space));
 }
 
 /* Old ids (#systems, #timeline) kept as zero-size targets at the very top of
@@ -438,10 +432,12 @@ body {
   left: 0;
   width: 0;
   height: 0;
+  scroll-margin-top: inherit;
 }
 
 .hero + .section {
   padding-top: clamp(3rem, 6vw, 4.5rem);
+  scroll-margin-top: calc(-1 * clamp(3rem, 6vw, 4.5rem));
 }
 
 .section-head {
@@ -464,6 +460,19 @@ body {
   font-weight: 600;
   line-height: 0.92;
   letter-spacing: -0.045em;
+}
+
+/* From 1024px the title shares a row with the lede in a 4-column box,
+   (shell - 2 gaps) / 3 wide. Capping the size at that box / 5.4 keeps the
+   longest title, "Experience" (~4.89em), inside it with clear air before
+   the lede. */
+@media (min-width: 1024px) {
+  .section-title {
+    font-size: min(
+      clamp(2.75rem, 6vw, 5.25rem),
+      (min(100vw - 2 * var(--gutter), var(--shell)) - 2 * var(--col-gap)) / 3 / 5.4
+    );
+  }
 }
 
 .section-lede {
@@ -576,10 +585,7 @@ body {
   color: var(--ink);
 }
 
-/* The discipline label (hardware builds with no employer) is styled like the
-   period, so it reads as metadata, never as a company name. */
-.project-period,
-.project-discipline {
+.project-period {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -667,12 +673,30 @@ body {
 }
 
 .xp-dates {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   margin: 0;
   font-size: 0.8125rem;
+  white-space: nowrap;
   color: var(--ink-3);
+}
+
+/* Where the 2-column date rail is narrowest (640-767px and 1024-1279px),
+   "Aug 2023 – May 2024" only fits one line at 12px, so the dates step down
+   a size and the live dot hangs in the margin to the left of the column. */
+@media (min-width: 640px) and (max-width: 767px), (min-width: 1024px) and (max-width: 1279px) {
+  .xp-dates {
+    font-size: 0.75rem;
+  }
+
+  .xp-dates .live-dot {
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 0.5rem);
+    transform: translateY(-50%);
+  }
 }
 
 .xp-dates:not(:first-child) {
@@ -732,6 +756,14 @@ body {
   font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+/* Under 375px "Infrastructure / Tooling" and "Hardware / Embedded" take two
+   lines; every title reserves two, so the rules and lists in each row line up. */
+@media (max-width: 374px) {
+  .stack-title {
+    min-height: calc(3.75rem + 1px);
+  }
 }
 
 .stack-list {
@@ -827,7 +859,23 @@ body {
   color: var(--ink-3);
 }
 
-@media (min-width: 640px) {
+/* Tablets: a 2x2 block, name and colophon on the left, the two actions
+   right-aligned, instead of a row that wraps one item onto its own line. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .site-footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
+    align-items: center;
+  }
+
+  .site-footer .footer-link {
+    justify-self: end;
+  }
+}
+
+@media (min-width: 1024px) {
   .site-footer {
     flex-direction: row;
     flex-wrap: wrap;
@@ -950,7 +998,6 @@ body {
   }
 
   .enter,
-  .hero-name.enter,
   .hero-foot.enter {
     animation: none;
   }
@@ -975,9 +1022,12 @@ body {
     animation: none !important;
   }
 
+  /* The ink button loses its background on paper and only jumps within
+     the page, so it goes; GitHub and Resume stay as plain links. */
   .skip-link,
   .grid-overlay,
-  .footer-grid-toggle {
+  .footer-grid-toggle,
+  .hero-actions .btn {
     display: none !important;
   }
 
@@ -986,5 +1036,11 @@ body {
   .stack-col,
   .contact-body {
     break-inside: avoid;
+  }
+
+  /* A heading always travels with the first row after it. */
+  .section-head,
+  .group-label {
+    break-after: avoid;
   }
 }
