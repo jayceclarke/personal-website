@@ -20,6 +20,7 @@ const config: Config = {
       fontFamily: {
         sans: [
           "var(--font-sans)",
+          '"Instrument Sans Text Fallback"',
           "ui-sans-serif",
           "system-ui",
           "-apple-system",

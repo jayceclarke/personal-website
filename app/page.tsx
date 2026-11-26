@@ -25,10 +25,15 @@ type Project = {
   summary: string;
   highlights: string[];
   tags: string[];
-  /** Where the work happened, or the discipline for independent builds. */
-  place: string;
+  /** The employer, where there is one. */
+  place?: string;
   /** Only shown where the timing is known. */
   period?: string;
+  /**
+   * Muted rail label for builds with no employer, made only from the
+   * project's own tags, so the rail never reads like a company name.
+   */
+  discipline?: string;
   current?: boolean;
 };
 
@@ -97,7 +102,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Achieved a 7.8 ns critical path"
         ],
         tags: ["SystemVerilog", "Computer Architecture", "VCS", "Verdi", "RISC-V"],
-        place: "CPU core"
+        discipline: "SystemVerilog"
       },
       {
         title: "Low-latency FPGA market data pipeline",
@@ -110,7 +115,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Validated with cocotb and a Python reference model"
         ],
         tags: ["FPGA", "RTL", "AXI-Stream", "NYSE XDP", "cocotb", "Low Latency"],
-        place: "Packet RTL"
+        discipline: "FPGA · RTL"
       }
     ]
   }
@@ -281,35 +286,25 @@ function useReveal() {
 
     pending.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
+    // Printing or saving as PDF should never depend on having scrolled first.
+    // globals.css also forces every block visible under @media print.
+    const revealAll = () => {
+      pending.forEach((el) => el.classList.remove("is-pending"));
+      observer.disconnect();
+    };
+    window.addEventListener("beforeprint", revealAll);
+
+    return () => {
+      window.removeEventListener("beforeprint", revealAll);
+      observer.disconnect();
+    };
   }, []);
 }
 
 /**
- * Press "g" (or use the footer toggle) to overlay the 12-column grid the page
- * is set on. Static, pointer-events: none, and off by default.
+ * The footer toggle overlays the 12-column grid the page is set on. Static,
+ * pointer-events: none, and off by default.
  */
-function useGridToggle() {
-  const [on, setOn] = useState(false);
-
-  useEffect(() => {
-    const handleKey = (event: KeyboardEvent) => {
-      if (event.key !== "g" && event.key !== "G") return;
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
-      const target = event.target as HTMLElement | null;
-      if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) {
-        return;
-      }
-      setOn((value) => !value);
-    };
-
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, []);
-
-  return [on, setOn] as const;
-}
-
 function GridOverlay() {
   return (
     <div className="grid-overlay" aria-hidden="true">
@@ -353,21 +348,31 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
     <li className="project-row layout-grid" data-reveal>
       <div className="project-rail col-span-4 sm:col-span-2">
         <span className="project-num">{String(index).padStart(2, "0")}</span>
-        <span className="project-place">{project.place}</span>
+        {project.place ? <span className="project-place">{project.place}</span> : null}
         {project.period ? (
           <span className="project-period">
             {project.current ? <span className="live-dot" aria-hidden="true" /> : null}
             {project.period}
           </span>
         ) : null}
+        {project.discipline ? (
+          <span className="project-discipline">{project.discipline}</span>
+        ) : null}
       </div>
 
       <div className="col-span-4 sm:col-span-6 lg:col-span-4">
         <h4 className="project-title">{project.title}</h4>
         <p className="project-summary">{project.summary}</p>
+        {/* Each tag is unbreakable and the slash is glued to the tag before it,
+            so lines only ever break between tags. */}
         <p className="project-tags">
           <span className="sr-only">Tags: </span>
-          {project.tags.join(" / ")}
+          {project.tags.map((tag, i) => (
+            <Fragment key={tag}>
+              {i > 0 ? "\u00a0/ " : null}
+              <span className="whitespace-nowrap">{tag}</span>
+            </Fragment>
+          ))}
         </p>
       </div>
 
@@ -441,7 +446,7 @@ function ExperienceList() {
 }
 
 export default function Home() {
-  const [grid, setGrid] = useGridToggle();
+  const [grid, setGrid] = useState(false);
   useReveal();
 
   return (
@@ -481,15 +486,20 @@ export default function Home() {
           <p className="hero-meta enter">B.S.E. Computer Engineering, Michigan &apos;26</p>
 
           <div className="hero-body">
-            <h1 id="hero-name" className="hero-name enter" style={{ animationDelay: "60ms" }}>
-              <span>Jayce</span> <span>Clarke</span>
+            {/* The space sits inside the first span: each word has its own
+                width-matched fallback font (globals.css), so "Clarke" starts
+                at the same x before and after Instrument Sans loads. */}
+            <h1 id="hero-name" className="hero-name enter">
+              <span>Jayce </span>
+              <span>Clarke</span>
             </h1>
 
-            <div className="hero-foot layout-grid enter" style={{ animationDelay: "160ms" }}>
+            <div className="hero-foot layout-grid enter">
+              {/* "· Ex-SpaceX" is one unbreakable unit, so a line can only break
+                  before the dot, never after it or inside Ex-SpaceX. */}
               <p className="hero-title col-span-4 sm:col-span-8 lg:col-span-6">
-                Software Engineer @ PointOne
-                <span className="hero-sep"> · </span>
-                <span className="hero-ex whitespace-nowrap">Ex-SpaceX</span>
+                Software Engineer @&nbsp;PointOne{" "}
+                <span className="whitespace-nowrap">· Ex-SpaceX</span>
               </p>
               <div className="hero-actions col-span-4 sm:col-span-8 lg:col-span-6">
                 <a href="#work" className="btn">
@@ -504,6 +514,8 @@ export default function Home() {
         </section>
 
         <section id="work" className="section shell" aria-labelledby="work-title">
+          {/* Old links to #systems land exactly where #work does. */}
+          <span id="systems" className="anchor-alias" />
           <SectionHead num="01" id="work-title" title="Work">
             <p>Production software, and the systems underneath.</p>
           </SectionHead>
@@ -511,6 +523,8 @@ export default function Home() {
         </section>
 
         <section id="experience" className="section shell" aria-labelledby="experience-title">
+          {/* Old links to #timeline land exactly where #experience does. */}
+          <span id="timeline" className="anchor-alias" />
           <SectionHead num="02" id="experience-title" title="Experience">
             <p>From firmware to production software.</p>
           </SectionHead>
@@ -585,7 +599,6 @@ export default function Home() {
           onClick={() => setGrid((value) => !value)}
         >
           {grid ? "Hide grid" : "Show grid"}
-          <kbd>G</kbd>
         </button>
         <a href="#top" className="footer-link">
           Back to top
