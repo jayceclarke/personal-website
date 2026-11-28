@@ -312,13 +312,8 @@ body {
   gap: 0.75rem 1.25rem;
 }
 
-/* LinkedIn and Resume are one flex item with the row's own gap, so the row
-   looks the same where it fits, and under ~390px it breaks between the
-   button and the pair, never between LinkedIn and Resume. */
-.hero-links {
-  display: flex;
-  align-items: center;
-  column-gap: inherit;
+.hero-actions .text-link {
+  font-size: 1.0625rem;
 }
 
 @media (min-width: 640px) {
@@ -331,25 +326,6 @@ body {
   .hero-actions {
     justify-content: flex-end;
   }
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  height: 2.875rem;
-  padding: 0 1.15rem;
-  border-radius: 2px;
-  background: var(--ink);
-  color: var(--paper);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background-color 150ms ease;
-}
-
-.btn:hover {
-  background: var(--accent);
 }
 
 .text-link {
@@ -923,10 +899,7 @@ body {
     animation: none !important;
   }
 
-  /* The ink button loses its background on paper and only jumps within
-     the page, so it goes; LinkedIn and Resume stay as plain links. */
-  .skip-link,
-  .hero-actions .btn {
+  .skip-link {
     display: none !important;
   }
 

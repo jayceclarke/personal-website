@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, type CSSProperties, type ReactNode } from "react";
-import { ArrowDown, ArrowUp, ArrowUpRight } from "lucide-react";
+import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const EMAIL = "jaycejclarke@gmail.com";
@@ -489,17 +489,8 @@ export default function Home() {
                 </span>
               </p>
               <div className="hero-actions col-span-4 sm:col-span-8 lg:col-span-6">
-                <a href="#work" className="btn">
-                  Selected work
-                  <ArrowDown className="h-4 w-4" aria-hidden="true" strokeWidth={1.75} />
-                </a>
-                {/* LinkedIn and Resume wrap as a pair: where the row is too
-                    narrow, the button keeps the first line and the two links
-                    share the second, so Resume never drops onto a line alone. */}
-                <div className="hero-links">
-                  <TextLink href={LINKS.linkedin}>LinkedIn</TextLink>
-                  <TextLink href={LINKS.resume}>Resume</TextLink>
-                </div>
+                <TextLink href={LINKS.linkedin}>LinkedIn</TextLink>
+                <TextLink href={LINKS.resume}>Resume</TextLink>
               </div>
             </div>
           </div>
@@ -547,10 +538,10 @@ export default function Home() {
 
         <section id="contact" className="section shell" aria-labelledby="contact-title">
           <SectionHead id="contact-title" title="Contact">
-            <p>Let’s build something that ships.</p>
+            <p>Always happy to talk.</p>
             <p className="section-note">
-              Open to conversations about production software, AI evaluation and
-              infrastructure, developer tooling, and systems engineering.
+              Especially about AI evals and infrastructure, developer tooling, and
+              anything where hardware and software meet.
             </p>
           </SectionHead>
 
