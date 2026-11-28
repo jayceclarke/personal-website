@@ -499,8 +499,11 @@ export default function Home() {
             <div className="col-span-4 sm:col-span-8 lg:col-span-4">
               <dt>Now</dt>
               <dd>
-                Building the CI-triggered eval platform and agentic experiment
-                search at PointOne.
+                <ul>
+                  <li>
+                    PointOne <span>Software Engineer</span>
+                  </li>
+                </ul>
               </dd>
             </div>
             <div className="col-span-4 lg:col-span-4">
