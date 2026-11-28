@@ -149,45 +149,100 @@ const experience: {
   }
 ];
 
-const skillGroups = [
+type Layer = {
+  name: string;
+  /** Where that layer's work happened: an employer, or a project's name. */
+  where: { place: string; work: string; current?: boolean }[];
+  tools: string[];
+};
+
+/**
+ * The Stack as a cross-section, software at the top and hardware at the
+ * bottom. Every place and detail comes from the Work and Experience copy or
+ * the resume; the tools are the old Stack lists plus the resume's Skills.
+ */
+const layers: Layer[] = [
   {
-    title: "Software",
-    skills: ["Python", "Go", "C++", "C", "C#", "TypeScript", ".NET", "Angular"]
+    name: "Models & evals",
+    where: [
+      {
+        place: "PointOne",
+        work: "CI-triggered eval platform and agentic experiment search behind every LLM task",
+        current: true
+      },
+      {
+        place: "Procter & Gamble",
+        work: "Computer vision for industrial OCR, Data Matrix decoding and defect detection"
+      }
+    ],
+    tools: [
+      "Model evaluation",
+      "Computer vision",
+      "Semantic segmentation",
+      "OCR",
+      "OpenCV",
+      "Python"
+    ]
   },
   {
-    title: "Infrastructure / Tooling",
-    skills: [
-      "Linux",
-      "Git",
+    name: "Platform software",
+    where: [
+      {
+        place: "SpaceX",
+        work: "Starshield scheduling and tasking workflows, authentication, metrics and alerting"
+      }
+    ],
+    tools: [
+      "TypeScript",
+      "Angular",
+      "C#",
+      ".NET",
+      "Go",
+      "PostgreSQL",
       "AWS",
       "Kubernetes",
-      "PostgreSQL",
+      "Linux",
+      "Git",
       "CI/CD",
       "Grafana"
     ]
   },
   {
-    title: "AI / Evals",
-    skills: [
-      "Model evaluation",
-      "Computer vision",
-      "OpenCV",
-      "OCR",
-      "Semantic segmentation"
-    ]
+    name: "Embedded & controls",
+    where: [
+      {
+        place: "Michigan Solar Car",
+        work: "STM32 firmware with HAL drivers and board-level communication protocols"
+      },
+      {
+        place: "Procter & Gamble",
+        work: "Automated data collection and a controls upgrade for a manufacturing test stand"
+      }
+    ],
+    tools: ["C", "C++", "STM32", "RTOS", "STM32CubeIDE"]
   },
   {
-    title: "Hardware / Embedded",
-    skills: [
+    name: "RTL & hardware",
+    where: [
+      {
+        place: "RISC-V processor",
+        work: "Out-of-order, N-way superscalar, R10K-style, with a 7.8 ns critical path"
+      },
+      {
+        place: "FPGA market data pipeline",
+        work: "Seven stages at 250 MHz, for NYSE XDP over 10G Ethernet"
+      }
+    ],
+    tools: [
       "SystemVerilog",
       "RTL design",
-      "FPGA",
       "Computer architecture",
       "Design verification",
-      "VCS",
+      "FPGA",
+      "Synopsys VCS",
       "Verdi",
-      "STM32",
-      "RTOS"
+      "ModelSim",
+      "Quartus"
     ]
   }
 ];
@@ -199,7 +254,7 @@ const skillGroups = [
  * span, like Ex-SpaceX in the hero, rather than using U+2011, which the web
  * fonts may not have.
  */
-const UNBREAKABLE = /(RISC-V|R10K-style|AXI-Stream|64-bit|250 MHz|7\.8 ns|10G Ethernet|NYSE XDP|Procter & Gamble|to 95%)/;
+const UNBREAKABLE = /(RISC-V|R10K-style|AXI-Stream|64-bit|N-way|250 MHz|7\.8 ns|10G Ethernet|NYSE XDP|Procter & Gamble|to 95%)/;
 
 function keepTogether(text: string): ReactNode {
   const parts = text.split(UNBREAKABLE);
@@ -434,6 +489,70 @@ function ExperienceList() {
   );
 }
 
+/**
+ * One row per layer, top to bottom. A hairline axis runs down the left edge
+ * of the rail from "Software" to "Hardware", with a tick at each layer name.
+ * The axis labels and column heads are visual only: the list's own label and
+ * each row's dt elements say the same thing to screen readers.
+ */
+function LayerMap() {
+  return (
+    <div className="layer-map">
+      <div className="layer-head layout-grid" aria-hidden="true">
+        <span className="layer-end col-span-4 sm:col-span-2">Software</span>
+        <span className="hidden lg:col-span-4 lg:block">Where</span>
+        <span className="hidden lg:col-span-6 lg:block">Tools</span>
+      </div>
+
+      <ol className="layer-list" aria-label="Layers, from software at the top to hardware at the bottom">
+        {layers.map((layer) => (
+          <li key={layer.name} className="layer-row layout-grid" data-reveal>
+            <h3 className="layer-name col-span-4 sm:col-span-2">{layer.name}</h3>
+            <dl className="layer-detail col-span-4 sm:col-span-6 lg:col-span-10">
+              <div className="lg:col-span-4">
+                <dt className="layer-label lg:sr-only">Where</dt>
+                <dd>
+                  <ul className="layer-where">
+                    {layer.where.map(({ place, work, current }) => (
+                      <li key={place + work}>
+                        <span className="layer-place">
+                          {current ? <span className="live-dot" aria-hidden="true" /> : null}
+                          <span>{keepTogether(place)}</span>
+                        </span>
+                        <span className="sr-only">: </span>
+                        <span className="layer-work">{keepTogether(work)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+              <div className="lg:col-span-6">
+                <dt className="layer-label lg:sr-only">Tools</dt>
+                {/* Each tool is unbreakable and the comma is glued to the tool
+                    before it, so lines only ever break between tools. */}
+                <dd>
+                  <ul className="layer-tools">
+                    {layer.tools.map((tool, i) => (
+                      <li key={tool}>
+                        {i > 0 ? <span aria-hidden="true">, </span> : null}
+                        <span className="whitespace-nowrap">{tool}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            </dl>
+          </li>
+        ))}
+      </ol>
+
+      <p className="layer-foot" aria-hidden="true">
+        <span className="layer-end">Hardware</span>
+      </p>
+    </div>
+  );
+}
+
 export default function Home() {
   useReveal();
 
@@ -553,24 +672,9 @@ export default function Home() {
 
         <section id="stack" className="section shell" aria-labelledby="stack-title">
           <SectionHead id="stack-title" title="Stack">
-            <p>Tools grouped by the layer they touch.</p>
+            <p>Each layer I’ve worked in, and the tools for it.</p>
           </SectionHead>
-          <div className="stack-grid layout-grid">
-            {skillGroups.map((group) => (
-              <div
-                key={group.title}
-                className="stack-col col-span-2 sm:col-span-4 lg:col-span-3"
-                data-reveal
-              >
-                <h3 className="stack-title">{group.title}</h3>
-                <ul className="stack-list">
-                  {group.skills.map((skill) => (
-                    <li key={skill}>{skill}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+          <LayerMap />
         </section>
 
         <section id="contact" className="section shell" aria-labelledby="contact-title">

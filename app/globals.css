@@ -545,7 +545,6 @@ body {
 
 .project-list,
 .xp-list,
-.stack-list,
 .project-highlights,
 .contact-links {
   margin: 0;
@@ -753,35 +752,189 @@ body {
 }
 
 /* ------------------------------------------------------------------------
-   Stack
+   Stack: a cross-section, software at the top and hardware at the bottom.
+   A hairline axis runs down the left edge of the rail, drawn one segment per
+   row (so it fades in with the rows), with a tick at each layer name. The
+   row rules start to the right of the axis, so it reads as its own line.
+   Every line is a border, not a background, so it prints.
    ------------------------------------------------------------------------ */
-.stack-grid {
-  row-gap: 2.75rem;
+.layer-map {
+  --axis: 1.125rem;
 }
 
-.stack-title {
-  margin: 0 0 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--rule);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-/* Under 375px "Infrastructure / Tooling" and "Hardware / Embedded" take two
-   lines; every title reserves two, so the rules and lists in each row line up. */
-@media (max-width: 374px) {
-  .stack-title {
-    min-height: calc(3.75rem + 1px);
+@media (min-width: 640px) {
+  .layer-map {
+    --axis: 1.5rem;
   }
 }
 
-.stack-list {
+.layer-head,
+.layer-foot,
+.layer-label {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.layer-head {
+  padding-bottom: 0.75rem;
+}
+
+.layer-end {
+  color: var(--ink);
+}
+
+.layer-foot {
+  margin: 0;
+  padding-top: 0.75rem;
+}
+
+.layer-list,
+.layer-where,
+.layer-tools {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.layer-row {
+  position: relative;
+  row-gap: 1.25rem;
+  padding-block: 1.75rem 2.25rem;
+  padding-left: var(--axis);
+}
+
+/* The axis segment. */
+.layer-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-left: 1px solid var(--ink);
+}
+
+/* The rule above each row; the first is ink, like the Work index. */
+.layer-row::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: var(--axis);
+  border-top: 1px solid var(--rule);
+}
+
+.layer-row:first-child::after {
+  border-top-color: var(--ink);
+}
+
+.layer-list::after {
+  content: "";
+  display: block;
+  margin-left: var(--axis);
+  border-top: 1px solid var(--ink);
+}
+
+/* From 640px only the rail is indented; the other columns keep the same
+   grid lines as Work and Experience above. */
+@media (min-width: 640px) {
+  .layer-row {
+    padding-left: 0;
+  }
+
+  .layer-name {
+    padding-left: var(--axis);
+  }
+}
+
+.layer-name {
+  position: relative;
+  margin: 0;
+  font-size: clamp(1.1875rem, 1.6vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* The tick from the axis to the layer name, level with its first line. */
+.layer-name::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: calc(-1 * var(--axis));
+  width: calc(var(--axis) - 0.5rem);
+  border-top: 1px solid var(--ink);
+}
+
+@media (min-width: 640px) {
+  .layer-name::before {
+    left: 0;
+  }
+}
+
+.layer-detail {
   display: grid;
-  gap: 0.3rem;
-  color: var(--ink-2);
-  font-size: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 1.25rem;
+  margin: 0;
+}
+
+/* Wide screens: a 10-column grid inside the 10 columns the detail spans, so
+   Where and Tools sit on the same lines as Work's Project and Highlights. */
+@media (min-width: 1024px) {
+  .layer-detail {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+}
+
+.layer-label {
+  margin-bottom: 0.5rem;
+  font-size: 0.6875rem;
+}
+
+.layer-detail dd {
+  margin: 0;
+}
+
+.layer-where {
+  display: grid;
+  gap: 0.85rem;
+  font-size: 0.9375rem;
   line-height: 1.5;
+}
+
+.layer-place {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.layer-work {
+  display: block;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.layer-tools {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.layer-tools li {
+  display: inline;
+}
+
+@media (min-width: 1024px) {
+  .layer-detail > div {
+    padding-top: 0.15rem;
+  }
 }
 
 /* ------------------------------------------------------------------------
@@ -956,14 +1109,15 @@ body {
 
   .project-row,
   .xp-entry,
-  .stack-col,
+  .layer-row,
   .contact-body {
     break-inside: avoid;
   }
 
   /* A heading always travels with the first row after it. */
   .section-head,
-  .group-label {
+  .group-label,
+  .layer-head {
     break-after: avoid;
   }
 }
