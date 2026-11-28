@@ -162,7 +162,6 @@ const skillGroups = [
       "AWS",
       "Kubernetes",
       "PostgreSQL",
-      "GitHub Actions",
       "CI/CD",
       "Grafana"
     ]
@@ -171,7 +170,6 @@ const skillGroups = [
     title: "AI / Evals",
     skills: [
       "Model evaluation",
-      "Model benchmarking",
       "Computer vision",
       "OpenCV",
       "OCR",

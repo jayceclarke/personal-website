@@ -247,26 +247,10 @@ body {
    Hero
    ------------------------------------------------------------------------ */
 .hero {
-  /* The name's font size, shared with the spacing so the band between the
-     eyebrow and the name scales with the name itself. */
-  --name-size: min(calc((100vw - 2 * var(--gutter)) / 5.4), 15.15rem);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: clamp(3.5rem, 12vh, 10rem);
-  min-height: clamp(30rem, calc(100svh - 4.25rem - 13rem), 46rem);
+  gap: 3rem;
   padding-block: clamp(1.75rem, 4vh, 2.5rem) 0;
-}
-
-/* Tablet and desktop: no screen-height minimum. The band between the
-   eyebrow and the name is about half the name's size, and 12vh at most so
-   short laptop screens still show "01 Work". Tall portrait tablets and big
-   monitors no longer open an empty band above the name. */
-@media (min-width: 640px) {
-  .hero {
-    gap: clamp(3rem, min(12vh, var(--name-size) * 0.55), 9rem);
-    min-height: 0;
-  }
 }
 
 .hero-meta {
@@ -275,30 +259,23 @@ body {
   color: var(--ink-3);
 }
 
-/* Sized to the measure: "Jayce Clarke" is ~5.23em wide, so it runs rule to
-   rule. Container units measure the column itself (scrollbars excluded), so
-   no slack is needed; browsers without them keep the vw-based --name-size.
-   Until Instrument Sans arrives each word is set in a fallback tuned to the
-   same width and baseline (see the top of this file), so the late swap
-   shifts nothing. The only break opportunity is the space between the
+/* A fixed, modest size: "Jayce Clarke" is ~5.2em wide, so it sits on one
+   line at every width. Until Instrument Sans arrives each word is set in a
+   fallback tuned to the same width and baseline (see the top of this file),
+   so the late swap shifts nothing. The only break opportunity is the space between the
    words (no hyphens, no overflow-wrap), so enlarged text spacing (WCAG
    1.4.12) wraps the name onto two lines instead of pushing it off the
    screen. The space must stay breakable: a nowrap span around "Jayce "
    would block it. */
-.hero-body {
-  container-type: inline-size;
-}
-
 .hero-name {
   margin: 0 0 0 -0.012em;
   padding-bottom: 0.13em;
   font-family: var(--font-sans-primary, "Instrument Sans"), "Hero Name Fallback",
     var(--font-sans), "Instrument Sans Text Fallback", ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--name-size);
-  font-size: calc(100cqi / 5.25);
+  font-size: 4.5rem;
   font-weight: 600;
-  line-height: 0.86;
-  letter-spacing: -0.05em;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
   color: var(--ink);
 }
 
@@ -321,15 +298,9 @@ body {
     var(--font-sans), "Instrument Sans Text Fallback", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Phones stack the name on two lines so it can be set larger. */
 @media (max-width: 639px) {
   .hero-name {
-    font-size: calc((100vw - 2 * var(--gutter)) / 2.95);
-    line-height: 0.84;
-  }
-
-  .hero-name span {
-    display: block;
+    font-size: 2.75rem;
   }
 }
 
@@ -491,12 +462,20 @@ body {
   color: var(--accent);
 }
 
+/* Section titles always stay a step below the hero name (2.75rem on
+   phones, 4.5rem from 640px). */
 .section-title {
   margin: 0;
-  font-size: clamp(2.75rem, 6vw, 5.25rem);
+  font-size: clamp(2rem, 8vw, 2.5rem);
   font-weight: 600;
   line-height: 0.92;
   letter-spacing: -0.045em;
+}
+
+@media (min-width: 640px) {
+  .section-title {
+    font-size: 3.5rem;
+  }
 }
 
 /* From 1024px the title shares a row with the lede in a 4-column box,
@@ -506,7 +485,7 @@ body {
 @media (min-width: 1024px) {
   .section-title {
     font-size: min(
-      clamp(2.75rem, 6vw, 5.25rem),
+      3.5rem,
       (min(100vw - 2 * var(--gutter), var(--shell)) - 2 * var(--col-gap)) / 3 / 5.4
     );
   }
@@ -835,28 +814,16 @@ body {
 .contact-email {
   justify-self: start;
   max-width: 100%;
-  font-size: min(calc((100vw - 2 * var(--gutter)) / 12.2), 5.75rem);
+  font-size: min(calc((100vw - 2 * var(--gutter)) / 12.2), clamp(1.5rem, 3vw, 2.5rem));
   font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.045em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
   color: var(--ink);
   text-decoration: none;
   overflow-wrap: anywhere;
   background: linear-gradient(currentColor, currentColor) 0 100% / 100% 2px no-repeat;
   padding-bottom: 0.08em;
   transition: color 150ms ease;
-}
-
-@media (min-width: 640px) {
-  .contact-email {
-    font-size: min(calc((100vw - 2 * var(--gutter)) * 0.75 / 12.2), 5.75rem);
-  }
-}
-
-@media (min-width: 1024px) {
-  .contact-email {
-    font-size: min(calc((100vw - 2 * var(--gutter)) * 0.83 / 12.2), 5.75rem);
-  }
 }
 
 .contact-email:hover {
