@@ -186,7 +186,10 @@ const layers: Layer[] = [
   },
   {
     name: "Platform software",
-    where: [{ place: "SpaceX", what: "Starshield" }],
+    where: [
+      { place: "PointOne", what: "intelligence tab", current: true },
+      { place: "SpaceX", what: "Starshield" }
+    ],
     tools: [
       "Angular",
       ".NET",
