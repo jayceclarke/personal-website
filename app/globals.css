@@ -143,7 +143,6 @@ body {
 .project-tags,
 .group-label,
 .xp-dates,
-.contact-label,
 .contact-handle,
 .site-footer {
   font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -923,12 +922,6 @@ body {
   align-items: baseline;
   padding-top: 1.1rem;
   border-top: 1px solid var(--rule);
-}
-
-.contact-label {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--ink-3);
 }
 
 .contact-email {

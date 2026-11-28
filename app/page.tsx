@@ -673,21 +673,17 @@ export default function Home() {
           </SectionHead>
 
           <div className="contact-body layout-grid" data-reveal>
-            <p className="contact-label col-span-4 sm:col-span-2">Email</p>
-            <a
-              href={LINKS.email}
-              className="contact-email col-span-4 sm:col-span-6 lg:col-span-10"
-            >
+            <a href={LINKS.email} className="contact-email col-span-4 sm:col-span-8 lg:col-span-12">
               {EMAIL}
             </a>
           </div>
 
           <ul className="contact-links layout-grid" data-reveal>
-            <li className="col-span-2 sm:col-span-3 sm:col-start-3 lg:col-span-5 lg:col-start-3">
+            <li className="col-span-2 sm:col-span-4 lg:col-span-6">
               <TextLink href={LINKS.linkedin}>LinkedIn</TextLink>
               <span className="contact-handle">in/jayce-clarke</span>
             </li>
-            <li className="col-span-2 sm:col-span-3 lg:col-span-5">
+            <li className="col-span-2 sm:col-span-4 lg:col-span-6">
               <TextLink href={LINKS.resume}>Resume</TextLink>
               <span className="contact-handle">PDF</span>
             </li>
