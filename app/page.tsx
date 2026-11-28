@@ -465,8 +465,6 @@ export default function Home() {
 
       <main id="main">
         <section className="hero shell" aria-labelledby="hero-name">
-          <p className="hero-meta enter">B.S.E. Computer Engineering, Michigan&nbsp;’26</p>
-
           <div className="hero-body">
             {/* The space sits inside the first span: each word has its own
                 width-matched fallback font (globals.css), so "Clarke" starts
@@ -494,6 +492,42 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* The hero fills the first screen; this strip anchors its bottom
+              edge with the short version of everything below. */}
+          <dl className="hero-facts layout-grid enter">
+            <div className="col-span-4 sm:col-span-8 lg:col-span-4">
+              <dt>Now</dt>
+              <dd>
+                Building the CI-triggered eval platform and agentic experiment
+                search at PointOne.
+              </dd>
+            </div>
+            <div className="col-span-4 lg:col-span-4">
+              <dt>Before</dt>
+              <dd>
+                <ul>
+                  <li>
+                    SpaceX <span>Starshield</span>
+                  </li>
+                  <li>
+                    Procter &amp; Gamble <span>Vision &amp; automation</span>
+                  </li>
+                  <li>
+                    Michigan Solar Car <span>Firmware</span>
+                  </li>
+                </ul>
+              </dd>
+            </div>
+            <div className="col-span-4 lg:col-span-4">
+              <dt>Education</dt>
+              <dd>
+                B.S.E. Computer Engineering
+                <br />
+                University of Michigan, 2026
+              </dd>
+            </div>
+          </dl>
         </section>
 
         <section id="work" className="section shell" aria-labelledby="work-title">

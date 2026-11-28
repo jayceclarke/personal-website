@@ -137,7 +137,7 @@ body {
 }
 
 .mono,
-.hero-meta,
+.hero-facts dt,
 .project-num,
 .project-period,
 .project-tags,
@@ -232,17 +232,64 @@ body {
 /* ------------------------------------------------------------------------
    Hero
    ------------------------------------------------------------------------ */
+/* The hero fills the first screen below the 68px header, so Work only
+   appears once you scroll. The name block sits in the middle of the free
+   space and the facts strip anchors the bottom edge. */
 .hero {
   display: flex;
   flex-direction: column;
   gap: 3rem;
-  padding-block: clamp(3rem, 10vh, 7rem) 0;
+  min-height: calc(100vh - 4.25rem);
+  min-height: calc(100svh - 4.25rem);
+  padding-block: clamp(2rem, 6vh, 4rem) clamp(1.5rem, 4vh, 2.5rem);
 }
 
-.hero-meta {
+.hero-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-facts {
   margin: 0;
-  font-size: 0.8125rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  row-gap: 1.75rem;
+}
+
+.hero-facts.enter {
+  animation-delay: 160ms;
+}
+
+.hero-facts dt {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--ink-3);
+}
+
+.hero-facts dd {
+  margin: 0.6rem 0 0;
+  max-width: 34ch;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.hero-facts ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-facts li span {
+  color: var(--ink-3);
+}
+
+.hero-facts li span::before {
+  content: " · ";
 }
 
 /* A fixed, modest size: "Jayce Clarke" is ~5.2em wide, so it sits on one
@@ -405,11 +452,9 @@ body {
   scroll-margin-top: inherit;
 }
 
-/* A clear break after the hero: on a laptop the first screen is mostly the
-   hero, with Work starting near the bottom. */
 .hero + .section {
-  padding-top: clamp(6rem, 18vh, 11rem);
-  scroll-margin-top: calc(-1 * clamp(6rem, 18vh, 11rem));
+  padding-top: clamp(4.5rem, 9vw, 7rem);
+  scroll-margin-top: calc(-1 * clamp(4.5rem, 9vw, 7rem));
 }
 
 .section-head {
@@ -892,6 +937,10 @@ body {
    to, and none of the screen-only chrome.
    ------------------------------------------------------------------------ */
 @media print {
+  .hero {
+    min-height: 0;
+  }
+
   [data-reveal],
   [data-reveal].is-pending,
   .enter {
