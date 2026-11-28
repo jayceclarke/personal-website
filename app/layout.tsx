@@ -27,10 +27,37 @@ const mono = IBM_Plex_Mono({
   fallback: ["IBM Plex Mono Metric Fallback", "ui-monospace", "monospace"]
 });
 
+const title = "Jayce Clarke | Software Engineer";
+const description =
+  "Portfolio for Jayce Clarke, a software engineer at PointOne building AI evaluation infrastructure, previously at SpaceX, and a University of Michigan Computer Engineering graduate.";
+
+// The link-preview card (public/og.png) and the icons in app/ are generated
+// by scripts/generate-share-assets.mjs; rerun it after changing what they say.
+const shareImage = {
+  url: "/og.png",
+  width: 1200,
+  height: 630,
+  alt: "Jayce Clarke. Software Engineer at PointOne, ex-SpaceX. B.S.E. Computer Engineering, Michigan ’26."
+};
+
 export const metadata: Metadata = {
-  title: "Jayce Clarke | Software Engineer",
-  description:
-    "Portfolio for Jayce Clarke, a software engineer at PointOne building AI evaluation infrastructure, previously at SpaceX, and a University of Michigan Computer Engineering graduate."
+  metadataBase: new URL("https://jayceclarke.xyz"),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "Jayce Clarke",
+    type: "website",
+    images: [shareImage]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: [shareImage]
+  }
 };
 
 export const viewport: Viewport = {
