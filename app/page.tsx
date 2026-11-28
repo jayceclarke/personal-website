@@ -150,30 +150,30 @@ const experience: {
 ];
 
 type Layer = {
+  /** A no-break space follows each "&", so a name only breaks before it. */
   name: string;
-  /** Where that layer's work happened: an employer, or a project's name. */
-  where: { place: string; work: string; current?: boolean }[];
+  /**
+   * Where that layer's work happened: an employer with a few words on what,
+   * or a project's own name. Kept to one line; Work and Experience have the
+   * detail.
+   */
+  where: { place: string; what?: string; current?: boolean }[];
   tools: string[];
 };
 
 /**
  * The Stack as a cross-section, software at the top and hardware at the
- * bottom. Every place and detail comes from the Work and Experience copy or
- * the resume; the tools are the old Stack lists plus the resume's Skills.
+ * bottom. Every place and phrase comes from the Work and Experience copy or
+ * the resume; the tools are the old Stack lists plus the resume's Skills, and
+ * where a tool is tied to one place (Angular, .NET and C# at SpaceX, Grafana
+ * on the P&G test stand) it sits in that place's row.
  */
 const layers: Layer[] = [
   {
-    name: "Models & evals",
+    name: "Models &\u00a0evals",
     where: [
-      {
-        place: "PointOne",
-        work: "CI-triggered eval platform and agentic experiment search behind every LLM task",
-        current: true
-      },
-      {
-        place: "Procter & Gamble",
-        work: "Computer vision for industrial OCR, Data Matrix decoding and defect detection"
-      }
+      { place: "PointOne", what: "eval platform", current: true },
+      { place: "Procter & Gamble", what: "computer vision" }
     ],
     tools: [
       "Model evaluation",
@@ -186,53 +186,32 @@ const layers: Layer[] = [
   },
   {
     name: "Platform software",
-    where: [
-      {
-        place: "SpaceX",
-        work: "Starshield scheduling and tasking workflows, authentication, metrics and alerting"
-      }
-    ],
+    where: [{ place: "SpaceX", what: "Starshield" }],
     tools: [
-      "TypeScript",
       "Angular",
-      "C#",
       ".NET",
+      "C#",
+      "TypeScript",
       "Go",
       "PostgreSQL",
       "AWS",
       "Kubernetes",
       "Linux",
       "Git",
-      "CI/CD",
-      "Grafana"
+      "CI/CD"
     ]
   },
   {
-    name: "Embedded & controls",
+    name: "Embedded &\u00a0controls",
     where: [
-      {
-        place: "Michigan Solar Car",
-        work: "STM32 firmware with HAL drivers and board-level communication protocols"
-      },
-      {
-        place: "Procter & Gamble",
-        work: "Automated data collection and a controls upgrade for a manufacturing test stand"
-      }
+      { place: "Michigan Solar Car", what: "STM32 firmware" },
+      { place: "Procter & Gamble", what: "test-stand automation" }
     ],
-    tools: ["C", "C++", "STM32", "RTOS", "STM32CubeIDE"]
+    tools: ["C", "C++", "STM32", "RTOS", "STM32CubeIDE", "Grafana"]
   },
   {
-    name: "RTL & hardware",
-    where: [
-      {
-        place: "RISC-V processor",
-        work: "Out-of-order, N-way superscalar, R10K-style, with a 7.8 ns critical path"
-      },
-      {
-        place: "FPGA market data pipeline",
-        work: "Seven stages at 250 MHz, for NYSE XDP over 10G Ethernet"
-      }
-    ],
+    name: "RTL &\u00a0hardware",
+    where: [{ place: "RISC-V processor" }, { place: "FPGA market data pipeline" }],
     tools: [
       "SystemVerilog",
       "RTL design",
@@ -490,19 +469,19 @@ function ExperienceList() {
 }
 
 /**
- * One row per layer, top to bottom. A hairline axis runs down the left edge
- * of the rail from "Software" to "Hardware", with a tick at each layer name.
- * The axis labels and column heads are visual only: the list's own label and
- * each row's dt elements say the same thing to screen readers.
+ * One row per layer, top to bottom: the layer, where it was, and its tools,
+ * on the same grid lines as Work. A hairline axis runs down the left edge of
+ * the rail from "Software" to "Hardware", with a tick at each layer name.
+ * The axis ends are visual only (the list's own label says the same), and
+ * the Where / Tools terms are for screen readers: on screen the columns, the
+ * weight of the place names and the order already tell them apart.
  */
 function LayerMap() {
   return (
     <div className="layer-map">
-      <div className="layer-head layout-grid" aria-hidden="true">
-        <span className="layer-end col-span-4 sm:col-span-2">Software</span>
-        <span className="hidden lg:col-span-4 lg:block">Where</span>
-        <span className="hidden lg:col-span-6 lg:block">Tools</span>
-      </div>
+      <p className="layer-end" aria-hidden="true" data-reveal>
+        Software
+      </p>
 
       <ol className="layer-list" aria-label="Layers, from software at the top to hardware at the bottom">
         {layers.map((layer) => (
@@ -510,24 +489,28 @@ function LayerMap() {
             <h3 className="layer-name col-span-4 sm:col-span-2">{layer.name}</h3>
             <dl className="layer-detail col-span-4 sm:col-span-6 lg:col-span-10">
               <div className="lg:col-span-4">
-                <dt className="layer-label lg:sr-only">Where</dt>
+                <dt className="sr-only">Where</dt>
                 <dd>
+                  {/* Each place and each phrase is unbreakable, so an entry
+                      can only wrap after its comma. */}
                   <ul className="layer-where">
-                    {layer.where.map(({ place, work, current }) => (
-                      <li key={place + work}>
-                        <span className="layer-place">
-                          {current ? <span className="live-dot" aria-hidden="true" /> : null}
-                          <span>{keepTogether(place)}</span>
-                        </span>
-                        <span className="sr-only">: </span>
-                        <span className="layer-work">{keepTogether(work)}</span>
+                    {layer.where.map(({ place, what, current }) => (
+                      <li key={place}>
+                        {current ? <span className="live-dot" aria-hidden="true" /> : null}
+                        <span className="layer-place whitespace-nowrap">{place}</span>
+                        {what ? (
+                          <>
+                            ,{" "}
+                            <span className="whitespace-nowrap">{what}</span>
+                          </>
+                        ) : null}
                       </li>
                     ))}
                   </ul>
                 </dd>
               </div>
               <div className="lg:col-span-6">
-                <dt className="layer-label lg:sr-only">Tools</dt>
+                <dt className="sr-only">Tools</dt>
                 {/* Each tool is unbreakable and the comma is glued to the tool
                     before it, so lines only ever break between tools. */}
                 <dd>
@@ -546,8 +529,8 @@ function LayerMap() {
         ))}
       </ol>
 
-      <p className="layer-foot" aria-hidden="true">
-        <span className="layer-end">Hardware</span>
+      <p className="layer-end" aria-hidden="true" data-reveal>
+        Hardware
       </p>
     </div>
   );
@@ -672,7 +655,7 @@ export default function Home() {
 
         <section id="stack" className="section shell" aria-labelledby="stack-title">
           <SectionHead id="stack-title" title="Stack">
-            <p>Each layer I’ve worked in, and the tools for it.</p>
+            <p>Tools grouped by the layer they touch.</p>
           </SectionHead>
           <LayerMap />
         </section>
