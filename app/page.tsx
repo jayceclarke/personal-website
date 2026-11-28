@@ -45,7 +45,7 @@ const projectGroups: { label: string; projects: Project[] }[] = [
           "Eval platform that replays a full day of production workflows, scoped to the pipeline steps a PR changes, separating real regressions from model noise with no data leaving the account",
           "Agentic experiment search: from a spec of constraints and variants, an agent commits each arm off master; successive halving on a DB clone moves the top arms to more days and opens a PR for the winner",
           "Every LLM task made model-agnostic and hot-swappable, benchmarked on accuracy, latency, and cost",
-          "Leading an intelligence page that shows law firms which tools and processes their teams use to complete work"
+          "Leading an intelligence tab that shows law firms which tools and processes their teams use to complete work"
         ],
         tags: ["AI evals", "LLMs", "AI agents", "CI"],
         place: "PointOne",
@@ -122,7 +122,7 @@ const experience: {
     company: "PointOne",
     roles: [{ title: "Software Engineer", dates: "Aug 2026 – Present", current: true }],
     detail:
-      "Building the CI-triggered eval platform and agentic experiment search behind every LLM task, and leading an intelligence page for law firms."
+      "Building the CI-triggered eval platform and agentic experiment search behind every LLM task, and leading an intelligence tab for law firms."
   },
   {
     company: "SpaceX",
