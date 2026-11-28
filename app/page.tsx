@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 const EMAIL = "jaycejclarke@gmail.com";
 
 const LINKS = {
-  github: "https://github.com/jayceclarke",
   linkedin: "https://www.linkedin.com/in/jayce-clarke/",
   resume: "/jaycejc-resume.pdf",
   email: `mailto:${EMAIL}`
@@ -524,11 +523,11 @@ export default function Home() {
                   Selected work
                   <ArrowDown className="h-4 w-4" aria-hidden="true" strokeWidth={1.75} />
                 </a>
-                {/* GitHub and Resume wrap as a pair: where the row is too
+                {/* LinkedIn and Resume wrap as a pair: where the row is too
                     narrow, the button keeps the first line and the two links
                     share the second, so Resume never drops onto a line alone. */}
                 <div className="hero-links">
-                  <TextLink href={LINKS.github}>GitHub</TextLink>
+                  <TextLink href={LINKS.linkedin}>LinkedIn</TextLink>
                   <TextLink href={LINKS.resume}>Resume</TextLink>
                 </div>
               </div>
@@ -596,15 +595,11 @@ export default function Home() {
           </div>
 
           <ul className="contact-links layout-grid" data-reveal>
-            <li className="col-span-4 sm:col-span-2 sm:col-start-3 lg:col-span-3 lg:col-start-3">
+            <li className="col-span-2 sm:col-span-3 sm:col-start-3 lg:col-span-5 lg:col-start-3">
               <TextLink href={LINKS.linkedin}>LinkedIn</TextLink>
               <span className="contact-handle">in/jayce-clarke</span>
             </li>
-            <li className="col-span-4 sm:col-span-2 lg:col-span-3">
-              <TextLink href={LINKS.github}>GitHub</TextLink>
-              <span className="contact-handle">@jayceclarke</span>
-            </li>
-            <li className="col-span-4 sm:col-span-2 lg:col-span-4">
+            <li className="col-span-2 sm:col-span-3 lg:col-span-5">
               <TextLink href={LINKS.resume}>Resume</TextLink>
               <span className="contact-handle">PDF</span>
             </li>

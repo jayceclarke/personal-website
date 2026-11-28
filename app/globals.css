@@ -355,9 +355,9 @@ body {
   gap: 0.75rem 1.25rem;
 }
 
-/* GitHub and Resume are one flex item with the row's own gap, so the row
+/* LinkedIn and Resume are one flex item with the row's own gap, so the row
    looks the same where it fits, and under ~390px it breaks between the
-   button and the pair, never between GitHub and Resume. */
+   button and the pair, never between LinkedIn and Resume. */
 .hero-links {
   display: flex;
   align-items: center;
@@ -1096,7 +1096,7 @@ body {
   }
 
   /* The ink button loses its background on paper and only jumps within
-     the page, so it goes; GitHub and Resume stay as plain links. */
+     the page, so it goes; LinkedIn and Resume stay as plain links. */
   .skip-link,
   .grid-overlay,
   .footer-grid-toggle,
