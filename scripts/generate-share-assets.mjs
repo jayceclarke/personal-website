@@ -13,23 +13,42 @@
  * same on every run. The card is set in the site's real fonts: the woff2 files
  * next/font emits into .next/static/media, inlined from the built CSS, which is
  * why it needs a build first. Colours come from the tokens in app/globals.css.
- * Playwright is not a dependency of the site; any global install will do.
+ *
+ * Playwright is not a dependency of the site. Either install it here without
+ * saving it (`npm i --no-save playwright`) or globally (`npm i -g playwright`);
+ * the script looks in `npm root -g` itself, since require() does not. Then
+ * fetch the browser once: `npx playwright install chromium`.
  */
+import { execSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const require = createRequire(import.meta.url);
 
-let chromium;
-try {
-  ({ chromium } = require("playwright"));
-} catch {
-  console.error("Playwright is needed to render the assets: npm i -g playwright && npx playwright install chromium");
+/** Playwright from this project, else from the global root (not on require()'s path). */
+function loadPlaywright() {
+  try {
+    return createRequire(import.meta.url)("playwright");
+  } catch {}
+  try {
+    const globalRoot = execSync("npm root -g", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    return createRequire(join(globalRoot, "noop.js"))("playwright");
+  } catch {}
+  return null;
+}
+
+const playwright = loadPlaywright();
+if (!playwright) {
+  console.error(
+    "Playwright is needed to render the assets. Install it, then its browser:\n" +
+      "  npm i --no-save playwright   (or: npm i -g playwright)\n" +
+      "  npx playwright install chromium"
+  );
   process.exit(1);
 }
+const { chromium } = playwright;
 
 /* ------------------------------------------------------------------------
    Tokens, read from the stylesheet so the assets never drift from the site.
@@ -167,7 +186,7 @@ html, body { margin: 0; background: ${PAPER}; }
 .meta {
   margin: 0;
   font-family: "IBM Plex Mono";
-  font-size: 30px;
+  font-size: 36px;
   line-height: 1;
   color: ${INK_3};
 }
