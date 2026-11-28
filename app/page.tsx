@@ -358,16 +358,18 @@ function SectionHead({
 }: {
   id: string;
   title: string;
-  children: ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <header className="section-head layout-grid" data-reveal>
       <h2 id={id} className="section-title col-span-4 sm:col-span-8 lg:col-span-6">
         {title}
       </h2>
-      <div className="section-lede col-span-4 sm:col-span-8 lg:col-span-6 lg:col-start-7 lg:row-start-1">
-        {children}
-      </div>
+      {children ? (
+        <div className="section-lede col-span-4 sm:col-span-8 lg:col-span-6 lg:col-start-7 lg:row-start-1">
+          {children}
+        </div>
+      ) : null}
     </header>
   );
 }
@@ -664,13 +666,7 @@ export default function Home() {
         </section>
 
         <section id="contact" className="section shell" aria-labelledby="contact-title">
-          <SectionHead id="contact-title" title="Contact">
-            <p>Always happy to talk.</p>
-            <p className="section-note">
-              Especially about AI evals and infrastructure, developer tooling, and
-              anything where hardware and software meet.
-            </p>
-          </SectionHead>
+          <SectionHead id="contact-title" title="Contact" />
 
           <div className="contact-body layout-grid" data-reveal>
             <a href={LINKS.email} className="contact-email col-span-4 sm:col-span-8 lg:col-span-12">

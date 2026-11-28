@@ -494,16 +494,6 @@ body {
   text-wrap: pretty;
 }
 
-.section-lede .section-note {
-  margin-top: 1.25rem;
-  max-width: 44ch;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.6;
-  letter-spacing: 0;
-  color: var(--ink-2);
-}
-
 @media (min-width: 640px) {
   .section-lede {
     margin-top: 0.75rem;
