@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useEffect, type CSSProperties, type ReactNode } from "react";
 import { ArrowDown, ArrowUp, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,10 +13,10 @@ const LINKS = {
 };
 
 const sections = [
-  { id: "work", num: "01", label: "Work" },
-  { id: "experience", num: "02", label: "Experience" },
-  { id: "stack", num: "03", label: "Stack" },
-  { id: "contact", num: "04", label: "Contact" }
+  { id: "work", label: "Work" },
+  { id: "experience", label: "Experience" },
+  { id: "stack", label: "Stack" },
+  { id: "contact", label: "Contact" }
 ] as const;
 
 type Project = {
@@ -40,14 +40,14 @@ const projectGroups: { label: string; projects: Project[] }[] = [
       {
         title: "AI evaluation platform",
         summary:
-          "Shipping production software at PointOne, centered on the eval platform behind every AI-powered task.",
+          "Shipping production software at PointOne, centered on the CI-triggered eval platform behind every LLM task.",
         highlights: [
-          "Eval platform that replays a full day of production workflows against any PR, separating real regressions from model noise",
-          "Every AI-powered task made model-agnostic, benchmarked on accuracy, latency, and cost",
-          "Models hot-swappable per task in production through a switch",
-          "Wired into CI: relevant PRs trigger targeted eval runs and post results back"
+          "Eval platform that replays a full day of production workflows, scoped to the pipeline steps a PR changes, separating real regressions from model noise with no data leaving the account",
+          "Agentic experiment search: from a spec of constraints and variants, an agent commits each arm off master; successive halving on a DB clone moves the top arms to more days and opens a PR for the winner",
+          "Every LLM task made model-agnostic and hot-swappable, benchmarked on accuracy, latency, and cost",
+          "Leading an intelligence page that shows law firms which tools and processes their teams use to complete work"
         ],
-        tags: ["AI evals", "GitHub Actions", "CI"],
+        tags: ["AI evals", "LLMs", "AI agents", "CI"],
         place: "PointOne",
         period: "2026 – Present",
         current: true
@@ -98,11 +98,11 @@ const projectGroups: { label: string; projects: Project[] }[] = [
         tags: ["SystemVerilog", "Computer architecture", "VCS", "Verdi", "RISC-V"]
       },
       {
-        title: "Low-latency FPGA market data pipeline",
+        title: "Low-latency market data RTL pipeline",
         summary:
-          "Architected and verified a 7-stage, 250 MHz FPGA-targeted HFT pipeline processing NYSE XDP order-based market data over 10G Ethernet.",
+          "Architected and verified a 7-stage, 250 MHz FPGA pipeline for NYSE XDP market data over 10G Ethernet.",
         highlights: [
-          "250 MHz FPGA-targeted pipeline",
+          "250 MHz FPGA pipeline",
           "Order-book maintenance with cuckoo hashing and 3-level top-of-book tracking",
           "Index-arbitrage signal generation on a 64-bit AXI-Stream datapath",
           "Validated with cocotb and a Python reference model"
@@ -122,7 +122,7 @@ const experience: {
     company: "PointOne",
     roles: [{ title: "Software Engineer", dates: "Aug 2026 – Present", current: true }],
     detail:
-      "Building AI evaluation infrastructure: production-replay evals on any PR, model-agnostic AI tasks, and CI-integrated accuracy tracking."
+      "Building the CI-triggered eval platform and agentic experiment search behind every LLM task, and leading an intelligence page for law firms."
   },
   {
     company: "SpaceX",
@@ -199,7 +199,7 @@ const skillGroups = [
  * span, like Ex-SpaceX in the hero, rather than using U+2011, which the web
  * fonts may not have.
  */
-const UNBREAKABLE = /(RISC-V|R10K-style|AXI-Stream|64-bit|250 MHz|7\.8 ns|Procter & Gamble|to 95%)/;
+const UNBREAKABLE = /(RISC-V|R10K-style|AXI-Stream|64-bit|250 MHz|7\.8 ns|10G Ethernet|NYSE XDP|Procter & Gamble|to 95%)/;
 
 function keepTogether(text: string): ReactNode {
   const parts = text.split(UNBREAKABLE);
@@ -314,42 +314,21 @@ function useReveal() {
   }, []);
 }
 
-/**
- * The footer toggle overlays the 12-column grid the page is set on. Static,
- * pointer-events: none, and off by default.
- */
-function GridOverlay() {
-  return (
-    <div className="grid-overlay" aria-hidden="true">
-      <div className="shell layout-grid h-full">
-        {Array.from({ length: 12 }, (_, index) => (
-          <span key={index} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function SectionHead({
-  num,
   id,
   title,
   children
 }: {
-  num: string;
   id: string;
   title: string;
   children: ReactNode;
 }) {
   return (
     <header className="section-head layout-grid" data-reveal>
-      <p className="section-num col-span-4 sm:col-span-2" aria-hidden="true">
-        {num}
-      </p>
-      <h2 id={id} className="section-title col-span-4 sm:col-span-6 lg:col-span-4">
+      <h2 id={id} className="section-title col-span-4 sm:col-span-8 lg:col-span-6">
         {title}
       </h2>
-      <div className="section-lede col-span-4 sm:col-span-6 sm:col-start-3 lg:col-span-6 lg:col-start-7 lg:row-start-1">
+      <div className="section-lede col-span-4 sm:col-span-8 lg:col-span-6 lg:col-start-7 lg:row-start-1">
         {children}
       </div>
     </header>
@@ -456,13 +435,11 @@ function ExperienceList() {
 }
 
 export default function Home() {
-  const [grid, setGrid] = useState(false);
   useReveal();
 
   return (
     <>
       <BackForwardCacheGuard />
-      {grid ? <GridOverlay /> : null}
 
       <a href="#main" className="skip-link">
         Skip to content
@@ -479,12 +456,7 @@ export default function Home() {
           <ol className="site-nav">
             {sections.map((section) => (
               <li key={section.id}>
-                <a href={`#${section.id}`}>
-                  <span className="site-nav-num" aria-hidden="true">
-                    {section.num}
-                  </span>
-                  {section.label}
-                </a>
+                <a href={`#${section.id}`}>{section.label}</a>
               </li>
             ))}
           </ol>
@@ -536,7 +508,7 @@ export default function Home() {
         <section id="work" className="section shell" aria-labelledby="work-title">
           {/* Old links to #systems land exactly where #work does. */}
           <span id="systems" className="anchor-alias" />
-          <SectionHead num="01" id="work-title" title="Work">
+          <SectionHead id="work-title" title="Work">
             <p>Production software and the systems underneath.</p>
           </SectionHead>
           <WorkIndex />
@@ -545,14 +517,14 @@ export default function Home() {
         <section id="experience" className="section shell" aria-labelledby="experience-title">
           {/* Old links to #timeline land exactly where #experience does. */}
           <span id="timeline" className="anchor-alias" />
-          <SectionHead num="02" id="experience-title" title="Experience">
+          <SectionHead id="experience-title" title="Experience">
             <p>From firmware to production software.</p>
           </SectionHead>
           <ExperienceList />
         </section>
 
         <section id="stack" className="section shell" aria-labelledby="stack-title">
-          <SectionHead num="03" id="stack-title" title="Stack">
+          <SectionHead id="stack-title" title="Stack">
             <p>Tools grouped by the layer they touch.</p>
           </SectionHead>
           <div className="stack-grid layout-grid">
@@ -574,7 +546,7 @@ export default function Home() {
         </section>
 
         <section id="contact" className="section shell" aria-labelledby="contact-title">
-          <SectionHead num="04" id="contact-title" title="Contact">
+          <SectionHead id="contact-title" title="Contact">
             <p>Let’s build something that ships.</p>
             <p className="section-note">
               Open to conversations about production software, AI evaluation and
@@ -607,16 +579,6 @@ export default function Home() {
 
       <footer className="site-footer shell">
         <p>Jayce Clarke{" · "}Software Engineer</p>
-        <p className="colophon">Set in Instrument Sans &amp; IBM Plex Mono</p>
-        {/* The visible label carries the state, so no aria-pressed: a toggle
-            button whose name also changes would announce "Hide grid, pressed". */}
-        <button
-          type="button"
-          className="footer-link footer-grid-toggle"
-          onClick={() => setGrid((value) => !value)}
-        >
-          {grid ? "Hide grid" : "Show grid"}
-        </button>
         <a href="#top" className="footer-link">
           Back to top
           <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" strokeWidth={1.75} />

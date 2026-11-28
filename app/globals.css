@@ -137,9 +137,7 @@ body {
 }
 
 .mono,
-.section-num,
 .hero-meta,
-.site-nav-num,
 .project-num,
 .project-period,
 .project-tags,
@@ -209,12 +207,6 @@ body {
   color: var(--ink);
 }
 
-.site-nav-num {
-  display: none;
-  font-size: 0.6875rem;
-  color: var(--ink-3);
-}
-
 /* Phones: grow the tap targets to >= 40px tall without moving anything.
    The padding is cancelled by an equal negative margin, so the layout box
    (and the 68px header) stays exactly the same size. */
@@ -223,12 +215,6 @@ body {
   .site-nav a {
     padding-block: 0.625rem;
     margin-block: -0.625rem;
-  }
-}
-
-@media (min-width: 640px) {
-  .site-nav-num {
-    display: inline;
   }
 }
 
@@ -455,15 +441,8 @@ body {
   row-gap: 0.75rem;
 }
 
-.section-num {
-  margin: 0;
-  padding-top: 0.35rem;
-  font-size: 0.8125rem;
-  color: var(--accent);
-}
-
-/* Section titles always stay a step below the hero name (2.75rem on
-   phones, 4.5rem from 640px). */
+/* Section titles always stay a step below the hero name: at most 2.5rem
+   on phones (name 2.75rem) and 3.5rem from 640px (name 4.5rem). */
 .section-title {
   margin: 0;
   font-size: clamp(2rem, 8vw, 2.5rem);
@@ -475,19 +454,6 @@ body {
 @media (min-width: 640px) {
   .section-title {
     font-size: 3.5rem;
-  }
-}
-
-/* From 1024px the title shares a row with the lede in a 4-column box,
-   (shell - 2 gaps) / 3 wide. Capping the size at that box / 5.4 keeps the
-   longest title, "Experience" (~4.89em), inside it with clear air before
-   the lede. */
-@media (min-width: 1024px) {
-  .section-title {
-    font-size: min(
-      3.5rem,
-      (min(100vw - 2 * var(--gutter), var(--shell)) - 2 * var(--col-gap)) / 3 / 5.4
-    );
   }
 }
 
@@ -529,7 +495,7 @@ body {
 }
 
 /* ------------------------------------------------------------------------
-   01 Work: an index, not cards
+   Work: an index, not cards
    ------------------------------------------------------------------------ */
 .work-group + .work-group {
   margin-top: clamp(3.5rem, 7vw, 6rem);
@@ -675,7 +641,7 @@ body {
 }
 
 /* ------------------------------------------------------------------------
-   02 Experience
+   Experience
    ------------------------------------------------------------------------ */
 .xp-list {
   border-top: 1px solid var(--rule);
@@ -764,7 +730,7 @@ body {
 }
 
 /* ------------------------------------------------------------------------
-   03 Stack
+   Stack
    ------------------------------------------------------------------------ */
 .stack-grid {
   row-gap: 2.75rem;
@@ -796,7 +762,7 @@ body {
 }
 
 /* ------------------------------------------------------------------------
-   04 Contact
+   Contact
    ------------------------------------------------------------------------ */
 .contact-body {
   row-gap: 0.75rem;
@@ -868,59 +834,11 @@ body {
   color: var(--ink-3);
 }
 
-/* Tablets: a 2x2 block, name and colophon on the left, the two actions
-   right-aligned, instead of a row that wraps one item onto its own line. */
-@media (min-width: 640px) and (max-width: 1023px) {
+@media (min-width: 640px) {
   .site-footer {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto;
-    grid-auto-flow: column;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-  }
-
-  .site-footer .footer-link {
-    justify-self: end;
-  }
-}
-
-/* Desktop: set on the 12-column grid like every other band. The name takes
-   columns 1-4, the colophon starts at column 5 (column 7, in line with the
-   ledes and highlights, once there is room for it from 1280px), Show grid
-   sits in column 10, and Back to top ends on the right edge. */
-@media (min-width: 1024px) {
-  .site-footer {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--col-gap);
-    align-items: center;
-  }
-
-  .site-footer > :first-child {
-    grid-column: 1 / 5;
-  }
-
-  .site-footer .colophon {
-    grid-column: 5 / 10;
-    white-space: nowrap;
-  }
-
-  .site-footer .footer-grid-toggle {
-    grid-column: 10 / 11;
-    justify-self: start;
-    white-space: nowrap;
-  }
-
-  .site-footer a.footer-link {
-    grid-column: 11 / 13;
-    justify-self: end;
-    white-space: nowrap;
-  }
-}
-
-@media (min-width: 1280px) {
-  .site-footer .colophon {
-    grid-column: 7 / 10;
   }
 }
 
@@ -929,32 +847,12 @@ body {
   color: var(--ink);
 }
 
-.site-footer .colophon {
-  color: var(--ink-3);
-}
-
-/* The grid toggle is a desktop nicety; keep phones uncluttered. */
-.footer-link.footer-grid-toggle {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .footer-link.footer-grid-toggle {
-    display: inline-flex;
-  }
-}
-
 .footer-link {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
   color: var(--ink-3);
   text-decoration: none;
-  cursor: pointer;
   transition: color 150ms ease;
 }
 
@@ -967,43 +865,6 @@ body {
   .footer-link {
     padding-block: 0.75rem;
     margin-block: -0.75rem;
-  }
-}
-
-/* ------------------------------------------------------------------------
-   Grid overlay (footer toggle)
-   ------------------------------------------------------------------------ */
-.grid-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  pointer-events: none;
-}
-
-.grid-overlay span {
-  background: rgba(191, 58, 26, 0.05);
-  box-shadow:
-    inset 1px 0 rgba(191, 58, 26, 0.22),
-    inset -1px 0 rgba(191, 58, 26, 0.22);
-}
-
-.grid-overlay span:nth-child(n + 5) {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .grid-overlay span:nth-child(n + 5) {
-    display: block;
-  }
-
-  .grid-overlay span:nth-child(n + 9) {
-    display: none;
-  }
-}
-
-@media (min-width: 1024px) {
-  .grid-overlay span:nth-child(n + 9) {
-    display: block;
   }
 }
 
@@ -1065,8 +926,6 @@ body {
   /* The ink button loses its background on paper and only jumps within
      the page, so it goes; LinkedIn and Resume stay as plain links. */
   .skip-link,
-  .grid-overlay,
-  .footer-grid-toggle,
   .hero-actions .btn {
     display: none !important;
   }
